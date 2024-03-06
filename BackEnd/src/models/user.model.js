@@ -33,8 +33,8 @@ const userSchema = new mongoose.Schema({
         default: "",
     },
     institution: {
-        type: String,
-        required: true,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Institution",
     },
     refreshToken: {
         type: String,
