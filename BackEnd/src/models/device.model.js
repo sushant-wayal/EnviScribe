@@ -9,6 +9,7 @@ const deviceSchema = new mongoose.Schema({
     sensors: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Sensor",
+        default: [],
     }],
 }, { timestamps: true });
 
