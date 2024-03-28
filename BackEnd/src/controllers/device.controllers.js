@@ -1,8 +1,18 @@
-import { asyncHandler } from "../utils/AsyncHandler";
-import { Device } from "../models/device.model";
+import { asyncHandler } from "../utils/AsyncHandler.js";
+import { Device } from "../models/device.model.js";
+import { User } from "../models/user.model.js";
 
-const getAllDevices = asyncHandler(async (_req, res) => {
-    const devices = await Device.find();
+const getInstitution = async (req) => {
+    const { id } = req.user;
+    const user = await User.findById(id).select("institution");
+    return user.institution;
+}
+
+const getAllDevices = asyncHandler(async (req, res) => {
+    const institution = await getInstitution(req);
+    const devices = await Device.findMany({
+        institution,
+    });
     res.status(200).json(new ApiResponse(200, devices));
 })
 
@@ -16,19 +26,9 @@ const getDevice = asyncHandler(async (req, res) => {
 })
 
 const createDevice = asyncHandler(async (req, res) => {
-    const { institution } = req.body;
+    const institution = await getInstitution(req);
     const device = await Device.create({ institution });
     res.status(201).json(new ApiResponse(201, device));
-})
-
-const changeInstitution = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const { institution } = req.body;
-    const device = await Device.findByIdAndUpdate(id, { institution }, { new: true });
-    if (!device) {
-        throw new ApiError(404, 'Device not found');
-    }
-    res.status(200).json(new ApiResponse(200, device));
 })
 
 const deleteDevice = asyncHandler(async (req, res) => {
@@ -44,6 +44,5 @@ export {
     getAllDevices,
     getDevice,
     createDevice,
-    changeInstitution,
     deleteDevice,
 };

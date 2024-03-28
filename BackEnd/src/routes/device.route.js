@@ -3,7 +3,6 @@ import {
     getAllDevices,
     getDevice,
     createDevice,
-    changeInstitution,
     deleteDevice
 } from "../controllers/device.controllers.js";
 
@@ -15,7 +14,6 @@ router.route("/")
 
 router.route("/:id")
 .get(getDevice)
-.put(changeInstitution)
 .delete(deleteDevice);
 
 export default router;

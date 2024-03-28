@@ -11,6 +11,10 @@ const deviceSchema = new mongoose.Schema({
         ref: "Sensor",
         default: [],
     }],
+    location: {
+        type: String,
+        required: true,
+    },
 }, { timestamps: true });
 
 export const Device = mongoose.model("Device", deviceSchema);
