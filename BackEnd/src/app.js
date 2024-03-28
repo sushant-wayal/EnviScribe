@@ -19,11 +19,13 @@ app.use(cookieParser());
 import userRoutes from './routes/user.routes.js';
 import imageUpload from './routes/image.route.js';
 import deviceRoutes from './routes/device.route.js';
+import sensorRoutes from './routes/sensor.route.js';
 
 // use routes
 
 app.use('/api/v1/images', imageUpload);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/devices', deviceRoutes);
+app.use('/api/v1/sensors', sensorRoutes);
 
 export { app };

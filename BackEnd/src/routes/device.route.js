@@ -9,11 +9,11 @@ import {
 const router = Router();
 
 router.route("/")
-.get(getAllDevices)
-.post(createDevice);
+    .get(getAllDevices)
+    .post(createDevice);
 
 router.route("/:id")
-.get(getDevice)
-.delete(deleteDevice);
+    .get(getDevice)
+    .delete(deleteDevice);
 
 export default router;

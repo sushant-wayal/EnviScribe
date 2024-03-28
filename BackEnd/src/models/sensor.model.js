@@ -30,10 +30,12 @@ const sensorSchema = new mongoose.Schema({
     alerts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Alert",
+        default: [],
     }],
     logs: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Log",
+        default: [],
     }],
 }, { timestamps: true });
 
