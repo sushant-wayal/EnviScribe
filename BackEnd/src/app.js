@@ -21,6 +21,7 @@ import imageUpload from './routes/image.route.js';
 import deviceRoutes from './routes/device.route.js';
 import sensorRoutes from './routes/sensor.route.js';
 import logRoutes from './routes/log.route.js';
+import alertRoutes from './routes/alert.route.js';
 
 // use routes
 
@@ -29,5 +30,6 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/devices', deviceRoutes);
 app.use('/api/v1/sensors', sensorRoutes);
 app.use('/api/v1/logs', logRoutes);
+app.use('/api/v1/alerts', alertRoutes);
 
 export { app };
