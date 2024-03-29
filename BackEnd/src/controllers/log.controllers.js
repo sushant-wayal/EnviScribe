@@ -5,6 +5,19 @@ import { Log } from "../models/log.model.js";
 
 export const getAllLogs = asyncHandler(async (req, res) => {
     const { sensorId } = req.params;
+    if (!sensorId) {
+        throw new ApiError(400, 'Sensor ID is required');
+    }
+    if (req.body.startDate && req.body.endDate) {
+        const logs = await Log.find({
+            sensor: sensorId,
+            createdAt: {
+                $gte: new Date(req.body.startDate),
+                $lt: new Date(req.body.endDate),
+            },
+        });
+        res.status(200).json(new ApiResponse(200, logs));
+    }
     const logs = await Log.find({ sensor: sensorId });
     res.status(200).json(new ApiResponse(200, logs));
 });
