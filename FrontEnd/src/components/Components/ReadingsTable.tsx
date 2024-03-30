@@ -13,11 +13,12 @@ interface ReadingsTableProps {
     timestamp: String;
     status: String;
   }[];
+  className?: string;
 }
 
-const ReadingsTable : React.FC<ReadingsTableProps> = ({ logs }) => {
+const ReadingsTable : React.FC<ReadingsTableProps> = ({ logs, className }) => {
   return (
-    <Table>
+    <Table className={className}>
       <TableHeader>
         <TableRow>
           <TableHead>Values</TableHead>
