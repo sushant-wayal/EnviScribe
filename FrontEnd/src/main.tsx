@@ -6,6 +6,7 @@ import { Route, RouterProvider, createBrowserRouter, createRoutesFromChildren } 
 import { HomePage } from './components/index.ts'
 import SensorsPage from './components/Pages/sensors.tsx'
 import LogsPage from './components/Pages/logs.tsx'
+import StatisticsPage from './components/Pages/statistics.tsx'
 
 const router = createBrowserRouter(
   createRoutesFromChildren(
@@ -13,6 +14,7 @@ const router = createBrowserRouter(
       <Route path="home" element={<HomePage />} />
       <Route path="device/:deviceId" element={<SensorsPage />} />
       <Route path="sensor/:sensorId" element={<LogsPage />} />
+      <Route path='statistics' element={<StatisticsPage/>} />
     </Route>
   )
 )
