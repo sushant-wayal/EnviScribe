@@ -1,4 +1,4 @@
-import User from "../models/User.js";
+import { User } from "../models/user.model.js";
 
 export const getInstitution = async (req) => {
     const { id } = req.user;

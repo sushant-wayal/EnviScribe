@@ -1,0 +1,64 @@
+{
+  "devices": [
+    {
+      "id": "device1",
+      "name": "Device 1",
+      "location": "Room A",
+      "sensors": ["sensor1", "sensor2", "sensor3", "sensor4"]
+    },
+    {
+      "id": "device2",
+      "name": "Device 2",
+      "location": "Room B",
+      "sensors": ["sensor5", "sensor6", "sensor7"]
+    },
+    {
+      "id": "device3",
+      "name": "Device 3",
+      "location": "Room C",
+      "sensors": ["sensor8", "sensor9", "sensor10", "sensor11", "sensor12"]
+    },
+    {
+      "id": "device4",
+      "name": "Device 4",
+      "location": "Room D",
+      "sensors": ["sensor13", "sensor14"]
+    },
+    {
+      "id": "device5",
+      "name": "Device 5",
+      "location": "Room E",
+      "sensors": ["sensor15", "sensor16", "sensor17", "sensor18", "sensor19", "sensor20"]
+    },
+    {
+      "id": "device6",
+      "name": "Device 6",
+      "location": "Room F",
+      "sensors": ["sensor21", "sensor22", "sensor23", "sensor24"]
+    },
+    {
+      "id": "device7",
+      "name": "Device 7",
+      "location": "Room G",
+      "sensors": ["sensor25", "sensor26", "sensor27"]
+    },
+    {
+      "id": "device8",
+      "name": "Device 8",
+      "location": "Room H",
+      "sensors": ["sensor28", "sensor29", "sensor30", "sensor31", "sensor32"]
+    },
+    {
+      "id": "device9",
+      "name": "Device 9",
+      "location": "Room I",
+      "sensors": ["sensor33", "sensor34"]
+    },
+    {
+      "id": "device10",
+      "name": "Device 10",
+      "location": "Room J",
+      "sensors": ["sensor35", "sensor36", "sensor37", "sensor38", "sensor39", "sensor40"]
+    }
+  ]
+}

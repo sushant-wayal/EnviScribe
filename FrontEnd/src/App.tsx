@@ -1,8 +1,10 @@
+import { Outlet } from "react-router-dom"
+
 interface AppProps {}
 
 const App : React.FC<AppProps> = () => {
   return (
-    <div className="bg-red-600">hello</div>
+    <Outlet/>
   )
 }
 

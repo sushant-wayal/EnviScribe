@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const institutionSchema = new mongoose.Schema({
-    device: [{
+    devices: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Device",
         default: [],

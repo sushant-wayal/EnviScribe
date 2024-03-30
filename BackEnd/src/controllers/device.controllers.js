@@ -3,13 +3,11 @@ import { Device } from "../models/device.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { getInstitution } from "../utils/GetInstitution.js";
-
+import { User } from "../models/user.model.js";
 
 export const getAllDevices = asyncHandler(async (req, res) => {
-    const institution = await getInstitution(req);
-    const devices = await Device.findMany({
-        institution,
-    });
+    const { id } = req.user;
+    const { devices } = await User.findById(id).select('institution').populate('institution').select('devices').populate('devices');
     res.status(200).json(new ApiResponse(200, devices));
 })
 

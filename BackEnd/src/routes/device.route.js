@@ -5,11 +5,12 @@ import {
     createDevice,
     deleteDevice
 } from "../controllers/device.controllers.js";
+import { isLoggedIn } from "../middlewares/authentication.middleware.js";
 
 const router = Router();
 
 router.route("/")
-    .get(getAllDevices)
+    .get(isLoggedIn, getAllDevices)
     .post(createDevice);
 
 router.route("/:id")
