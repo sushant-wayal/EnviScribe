@@ -6,11 +6,11 @@ import { Sensor } from "../models/sensor.model.js";
 
 export const getAllSensors = asyncHandler(async (req, res) => {
     const { deviceId } = req.params;
-    const device = await Device.findById(deviceId).populate("sensors");
-    if (!device) {
+    const { sensors } = await Device.findById(deviceId).select("sensors").populate("sensors");
+    if (!sensors) {
         throw new ApiError(404, 'Device not found');
     }
-    res.status(200).json(new ApiResponse(200, device.sensors));
+    res.status(200).json(new ApiResponse(200, sensors));
 });
 
 export const getSensor = asyncHandler(async (req, res) => {

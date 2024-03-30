@@ -17,7 +17,7 @@ const DeviceCard : React.FC<DeviceCardProps> = ({
   sensors
 }) => {
   return (
-    <Link className="mx-5" to={`/devices/${id}`}>
+    <Link className="mx-5" to={`/device/${id}`}>
       <Card className="flex justify-between items-center">
         <CardHeader>
           <CardTitle>{name}</CardTitle>
