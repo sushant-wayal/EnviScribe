@@ -16,7 +16,7 @@ interface SensorCardProps {
   minValue: Number;
   maxValue: Number;
   logs: {
-    value: String;
+    value: Number;
     timestamp: String;
     status: String;
   }[];

@@ -16,6 +16,7 @@ type Sensor = {
   logs: {
     value: Number;
     timestamp: String;
+    status: String;
   }[];
 }
 
