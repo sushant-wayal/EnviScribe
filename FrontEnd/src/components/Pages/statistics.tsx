@@ -1,5 +1,6 @@
 import { LineChart } from "@mui/x-charts/LineChart";
 import logs from "../../data/logs.json";
+import Navbar from "../Components/Navbar";
 
 interface StatisticsPageProps {}
 
@@ -17,33 +18,17 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
     return log.timestamp;
   });
   return (
-    <div>
+    <>
+      <Navbar />
       <LineChart
-        width={1500}
+        width={800}
         height={500}
         series={[
           {data, label: "Temperature"},
         ]}
         xAxis={[{ scaleType: 'point', data: labels }]}
-        sx={{
-          '.MuiLineElement-root, .MuiMarkElement-root': {
-            strokeWidth: 1,
-          },
-          '.MuiLineElement-series-pvId': {
-            strokeDasharray: '5 5',
-          },
-          '.MuiLineElement-series-uvId': {
-            strokeDasharray: '3 4 5 2',
-          },
-          '.MuiMarkElement-root:not(.MuiMarkElement-highlighted)': {
-            fill: '#fff',
-          },
-          '& .MuiMarkElement-highlighted': {
-            stroke: 'none',
-          },
-        }}
       />
-    </div>
+    </>
   );
 };
 
