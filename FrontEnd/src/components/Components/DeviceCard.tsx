@@ -5,7 +5,10 @@ interface DeviceCardProps {
   id: string;
   name: string;
   status: string;
-  location: string;
+  location: {
+    latitude: number,
+    longitude: number
+  };
   sensors: Number;
 }
 
@@ -13,7 +16,7 @@ const DeviceCard : React.FC<DeviceCardProps> = ({
   id,
   name,
   status,
-  location,
+  location : { latitude, longitude },
   sensors
 }) => {
   return (
@@ -26,7 +29,8 @@ const DeviceCard : React.FC<DeviceCardProps> = ({
           {status}
         </CardContent>
         <CardFooter className="flex items-center gap-10">
-          <CardDescription>{location}</CardDescription>
+          <CardDescription className="text-center">{latitude}</CardDescription>
+          <CardDescription className="text-center">{longitude}</CardDescription>
           <CardDescription>{sensors.toString()} sensors</CardDescription>
         </CardFooter>
       </Card>

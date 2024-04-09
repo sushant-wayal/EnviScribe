@@ -3,14 +3,19 @@ import Navbar from "../Components/Navbar"
 import axios from "axios"
 import DeviceCard from "../Components/DeviceCard";
 import Devices from "../../data/devices.json";
+import Map from "../Components/Map";
 
 interface HomePageProps {}
 
 type Device = {
   id: string;
   name: string;
-  location: string;
+  location: {
+    latitude: number,
+    longitude: number
+  };
   sensors: Array<string>;
+  status: string;
 }
 
 const HomePage : React.FC<HomePageProps> = () => {
@@ -22,13 +27,30 @@ const HomePage : React.FC<HomePageProps> = () => {
     };
     getDevices();
   },[devices]);
+  const calculateCenter = (): number[] => {
+    for (let i = 0; i < devices.length; i++) {
+      if (devices[i].status === "Danger") {
+        return [devices[i].location.latitude, devices[i].location.longitude];
+      }
+    }
+    return [devices[0].location.latitude, devices[0].location.longitude];
+  };
   return (
     <>
       <Navbar />
+      <Map
+        center={calculateCenter()}
+        zoom={13}
+        markers={devices.map(device => ({
+          position: [device.location.latitude,device.location.longitude],
+          popup: device.name,
+          status: device.status
+        }))}
+      />
       <div className="flex flex-col gap-3">
         {devices.map(device => {
-          const { id, name, location, sensors } = device;
-          return <DeviceCard key={id} id={id} name={name} status={"Normal"} location={location} sensors={sensors.length} />;
+          const { id, name, location, sensors, status } = device;
+          return <DeviceCard key={id} id={id} name={name} status={status} location={location} sensors={sensors.length} />;
         })}
       </div>
     </>
