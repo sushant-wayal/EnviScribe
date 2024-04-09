@@ -38,7 +38,7 @@ const Map: React.FC<MapProps> = ({ className, center, zoom, markers }) => {
     return divIcon({
       html: `<div><p>${cluster.getChildCount()}</p></div>`,
       iconSize: [30,30],
-      className: "bg-red-600 rounded-full flex justify-center items-center text-white font-bold text-xl pl-[10px] pt-[2.5px]"
+      className: "bg-green-600 rounded-full flex justify-center items-center text-white font-bold text-xl pl-[10px] pt-[2.5px]"
     });
   }
   return (

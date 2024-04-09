@@ -1,22 +1,28 @@
 import { LineChart } from "@mui/x-charts/LineChart";
 import logs from "../../data/logs.json";
 import Navbar from "../Components/Navbar";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 interface StatisticsPageProps {}
 
 const StatisticsPage: React.FC<StatisticsPageProps> = () => {
-  const data = logs.logs.map((log, index) => {
-    if (index >= 10) {
-      return null;
+  const { sensorId } = useParams();
+  const [noOfPoints, setNoOfPoints] = useState<number>(24);
+  const [data, setData] = useState<number[]>([]);
+  const [labels, setLabels] = useState<string[]>([]);
+  useEffect(() => {
+    const data = [];
+    for (let i = 0; i < noOfPoints; i++) {
+      data.push(parseFloat(logs.logs[i].value.toString()));
     }
-    return log.value;
-  });
-  const labels = logs.logs.map((log, index) => {
-    if (index >= 10) {
-      return null;
+    setData(data);
+    const labels = [];
+    for (let i = 0; i < noOfPoints; i++) {
+      labels.push(logs.logs[i].timestamp);
     }
-    return log.timestamp;
-  });
+    setLabels(labels);
+  }, [data, labels, noOfPoints]);
   return (
     <>
       <Navbar />

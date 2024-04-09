@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle
 } from "../ui/card";
-import ReadingsTable from "./ReadingsTable";
+import { LineChart } from "@mui/x-charts/LineChart";
 
 interface SensorCardProps {
   id: string;
@@ -30,8 +30,20 @@ const SensorCard : React.FC<SensorCardProps> = ({
   maxValue,
   logs
 }) => {
+  const data = logs.map((log, index) => {
+    if (index >= 3) {
+      return null;
+    }
+    return parseFloat(log.value.toString());
+  });
+  const labels = logs.map((log, index) => {
+    if (index >= 3) {
+      return null;
+    }
+    return log.timestamp;
+  });
   return (
-    <Link className="w-[300px] max-h-[500px] mx-auto my-5" to={`/sensor/${id}`}>
+    <Link className="w-auto max-h-[500px] mx-auto my-5" to={`/statistics/${id}`}>
       <Card className="px-3">
         <CardHeader className="border-b-2 border-black border-solid">
           <CardTitle>{name}</CardTitle>
@@ -40,19 +52,16 @@ const SensorCard : React.FC<SensorCardProps> = ({
             <p>Max Value: {maxValue.toString()}</p>
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col gap-5">
-          {/* <div className="flex justify-between">
-            <p className="font-semibold">Reading</p>
-            <p className="font-semibold">Timestamp</p>
-          </div>
-          {logs.map((log, index) => {
-            const { value, timestamp } = log
-            return <div key={index} className="flex justify-between">
-              <p>{value.toString()}</p>
-              <p>{timestamp.toString()}</p>
-            </div>
-          })} */}
-          <ReadingsTable logs={logs} />
+        <CardContent>
+          <LineChart
+            width={300}
+            height={300}
+            series={[
+              {data, label: name.split(' ')[0]},
+            ]}
+            xAxis={[{ scaleType: 'point', data: labels }]}
+            className="bg-red-600"
+          />
         </CardContent>
         <CardFooter className="flex items-center gap-10 border-t-2 border-black border-solid">
           <CardDescription className="flex justify-start gap-3">
