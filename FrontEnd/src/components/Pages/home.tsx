@@ -4,6 +4,7 @@ import axios from "axios"
 import DeviceCard from "../Components/DeviceCard";
 import Devices from "../../data/devices.json";
 import Map from "../Components/Map";
+import { domain } from "@/constants";
 
 interface HomePageProps {}
 
@@ -22,7 +23,7 @@ const HomePage : React.FC<HomePageProps> = () => {
   const [devices, setDevices] = useState<Device[]>(Devices.devices);
   useEffect(() => {
     const getDevices = async () => {
-      const { data } = await axios.get("http://localhost:3000/api/v1/devices");
+      const { data } = await axios.get(`${domain}/api/v1/devices`);
       setDevices(data);
     };
     getDevices();

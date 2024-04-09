@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import ReadingsTable from "../Components/ReadingsTable";
 import Logs from "../../data/logs.json";
 import * as XLSX from 'xlsx';
+import { domain } from "@/constants";
 
 interface logsPageProps {}
 
@@ -45,7 +46,7 @@ const LogsPage: React.FC<logsPageProps> = () => {
   };
   useEffect(() => {
     const getLogs = async () => {
-      const { data } = await axios.get(`http://localhost:3000/api/v1/logs/${sensorId}`);
+      const { data } = await axios.get(`${domain}/api/v1/logs/${sensorId}`);
       setLogs(data);
     };
     getLogs();

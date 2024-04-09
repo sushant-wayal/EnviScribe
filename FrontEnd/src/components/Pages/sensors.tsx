@@ -4,6 +4,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import SensorCard from "../Components/SensorCard";
 import Sensor from "../../data/sensors.json";
+import { domain } from "@/constants";
 
 interface SensorsPageProps {}
 
@@ -25,7 +26,7 @@ const SensorsPage : React.FC<SensorsPageProps> = () => {
   const [sensors, setSensors] = useState<Sensor[]>(Sensor.sensors);
   useEffect(() => {
     const getSensors = async () => {
-      const { data } = await axios.get(`http://localhost:3000/api/v1/sensors/${deviceId}`);
+      const { data } = await axios.get(`${domain}/api/v1/sensors/${deviceId}`);
       setSensors(data);
     };
     getSensors();
