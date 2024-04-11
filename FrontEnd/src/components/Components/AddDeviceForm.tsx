@@ -15,13 +15,23 @@ import { Button } from "../ui/button";
 import { useEffect, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { AlertDialogAction, AlertDialogCancel, AlertDialogFooter } from "../ui/alert-dialog";
+import axios from "axios";
+import { domain } from "@/constants";
 
 interface AddDeviceFormProps {}
 
 const AddDeviceForm: React.FC<AddDeviceFormProps> = ({}) => {
   const alertDialogAction = useRef<HTMLButtonElement>(null)
+  const search = useRef<HTMLDivElement>(null);
   const [selectedSensors, setSelectedSensors] = useState<string[]>([])
   const [sensorName, setSensorName] = useState<string>("")
+  const [sensors, setSensors] = useState<string[]>(["hi","hello","yo yo","sab thik","hi","hello","yo yo","sab thik"]);
+  const getSensors = async (query : string) => {
+    // const { data } = await axios.get(`${domain}/api/v1/sensors/${query}`);
+    // setSensors(data);
+    search.current?.classList.add("flex");
+    search.current?.classList.remove("hidden");
+  }
   const addSensor = (sensor: string) => {
     setSelectedSensors((prev) => [sensor, ...prev])
     setSensorName("")
@@ -36,11 +46,20 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({}) => {
     }
   })
   useEffect(() => {
-    if (form.formState.isSubmitted && !form.formState.isSubmitting) {
+    const { submitCount, errors : { sensors, deviceName, latitude, longitude } } = form.formState;
+    if (submitCount > 0 && sensors == undefined && deviceName == undefined && longitude == undefined && latitude == undefined) {
       alertDialogAction.current?.click()
     }
-  }, [form.formState.isSubmitted])
-  const onSubmit = async(values: z.infer<typeof AddDeviceFormSchema>) => {}
+  }, [form.formState.submitCount])
+  useEffect(() => {
+    document.addEventListener("click", (e) => {
+      if (e.target != search.current) {
+        search.current?.classList.add("hidden");
+        search.current?.classList.remove("flex");
+      }
+    })
+  },[])
+  const onSubmit = async(_values: z.infer<typeof AddDeviceFormSchema>) => {}
   return (
     <Form {...form}>
       <form
@@ -113,28 +132,47 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({}) => {
           <FormControl>
             <div className="flex w-full gap-2 items-center">
               <Search/>
-              <Input
-                className="flex-grow"
-                type="text"
-                placeholder="Search Sensors"
-                value={sensorName}
-                onChange={(e) => setSensorName(e.target.value)}
-                onKeyUp={(e) => {
-                  e.preventDefault()
-                  if (e.key === "Enter") {
-                    addSensor(sensorName)
-                    form.setValue("sensors", selectedSensors)
-                  }
-                }}
-              />
+              <div className="flex-grow relative">
+                <Input
+                  type="text"
+                  placeholder="Search Sensors"
+                  value={sensorName}
+                  onChange={(e) => {
+                    const curr = e.target.value
+                    setSensorName(curr)
+                    getSensors(curr);
+                  }}
+                  onKeyUp={(e) => {
+                    e.preventDefault()
+                    if (e.key === "Enter") {
+                      addSensor(sensorName)
+                      form.setValue("sensors", selectedSensors)
+                    }
+                  }}
+                />
+                <div className={`absolute top-[100%] w-full max-h-[100px] flex flex-col border-black border-solid rounded bg-white  overflow-x-auto ${sensors.length != 0 ? "border-2 p-2" : ""}`} ref={search}>
+                  {sensors.map((sensor, index) => (
+                    <p
+                      key={index}
+                      onClick={() => {
+                        addSensor(sensor);
+                        form.setValue("sensors", selectedSensors)
+                        search.current?.classList.add("hidden");
+                        search.current?.classList.remove("flex");
+                      }}
+                    >
+                      {sensor}
+                    </p>
+                  ))}
+                </div>
+              </div>
               <Button
                 type="button"
                 onClick={() => {
-                  addSensor(sensorName)
-                  form.setValue("sensors", selectedSensors)
+                  setSensorName("");
                 }}
               >
-                +
+                x
               </Button>
             </div>
           </FormControl>
