@@ -5,6 +5,7 @@ import DeviceCard from "../Components/DeviceCard";
 import Devices from "../../data/devices.json";
 import Map from "../Components/Map";
 import { domain } from "@/constants";
+import AddDevice from "../Components/AddDevice";
 
 interface HomePageProps {}
 
@@ -39,15 +40,18 @@ const HomePage : React.FC<HomePageProps> = () => {
   return (
     <>
       <Navbar />
-      <Map
-        center={calculateCenter()}
-        zoom={13}
-        markers={devices.map(device => ({
-          position: [device.location.latitude,device.location.longitude],
-          popup: device.name,
-          status: device.status
-        }))}
-      />
+      <div className="relative">
+        <AddDevice />
+        <Map
+          center={calculateCenter()}
+          zoom={13}
+          markers={devices.map(device => ({
+            position: [device.location.latitude,device.location.longitude],
+            popup: device.name,
+            status: device.status
+          }))}
+        />
+      </div>
       <div className="flex flex-col gap-3">
         {devices.map(device => {
           const { id, name, location, sensors, status } = device;
