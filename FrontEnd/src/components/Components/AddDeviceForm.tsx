@@ -12,11 +12,14 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Search } from "lucide-react";
+import { AlertDialogAction, AlertDialogCancel, AlertDialogFooter } from "../ui/alert-dialog";
 
 interface AddDeviceFormProps {}
 
 const AddDeviceForm: React.FC<AddDeviceFormProps> = ({}) => {
+  const alertDialogAction = useRef<HTMLButtonElement>(null)
   const [selectedSensors, setSelectedSensors] = useState<string[]>([])
   const [sensorName, setSensorName] = useState<string>("")
   const addSensor = (sensor: string) => {
@@ -27,15 +30,21 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({}) => {
     resolver: zodResolver(AddDeviceFormSchema),
     defaultValues: {
       deviceName: "",
-      longitude: 0,
-      latitude: 0,
+      longitude: "0",
+      latitude: "0",
       sensors: []
     }
   })
+  useEffect(() => {
+    if (form.formState.isSubmitted && !form.formState.isSubmitting) {
+      alertDialogAction.current?.click()
+    }
+  }, [form.formState.isSubmitted])
   const onSubmit = async(values: z.infer<typeof AddDeviceFormSchema>) => {}
   return (
     <Form {...form}>
       <form
+        id = "addDeviceForm"
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-8"
       >
@@ -102,7 +111,8 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({}) => {
             Sensors
           </FormLabel>
           <FormControl>
-            <div className="flex w-full gap-2">
+            <div className="flex w-full gap-2 items-center">
+              <Search/>
               <Input
                 className="flex-grow"
                 type="text"
@@ -113,12 +123,16 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({}) => {
                   e.preventDefault()
                   if (e.key === "Enter") {
                     addSensor(sensorName)
+                    form.setValue("sensors", selectedSensors)
                   }
                 }}
               />
               <Button
                 type="button"
-                onClick={() => addSensor(sensorName)}
+                onClick={() => {
+                  addSensor(sensorName)
+                  form.setValue("sensors", selectedSensors)
+                }}
               >
                 +
               </Button>
@@ -138,6 +152,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({}) => {
                 onClick={() => {
                   setSelectedSensors((prev) => prev.filter((_, i) => i !== index))
                   document.querySelector(`sensor${index}`)?.remove();
+                  form.setValue("sensors", selectedSensors)
                 }}
               >
                 x
@@ -145,19 +160,26 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({}) => {
             </div>
           ))}
         </div>
-        <Button
-          type="submit"
-          disabled={form.formState.isSubmitting}
-          className="disabled:cursor-not-allowed"
-        >
-          {form.formState.isSubmitting ? (
-            <>
-              Please Wait
-            </>
-          ): (
-            "Send"
-          )}
-        </Button>
+        <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <Button
+              type="submit"
+              disabled={form.formState.isSubmitting}
+              className="disabled:cursor-not-allowed"
+            >
+              {form.formState.isSubmitting ? (
+                <>
+                  Please Wait
+                </>
+              ): (
+                "Add"
+              )}
+            </Button>
+            <AlertDialogAction
+              className="hidden"
+              ref={alertDialogAction}
+            ></AlertDialogAction>
+        </AlertDialogFooter>
       </form>
     </Form>
   )

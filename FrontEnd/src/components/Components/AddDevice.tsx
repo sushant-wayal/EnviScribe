@@ -31,10 +31,6 @@ const AddDevice : React.FC<AddDeviceProps> = () => {
             <AddDeviceForm/>
           </AlertDialogDescription>
         </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction>Add</AlertDialogAction>
-          </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   )
