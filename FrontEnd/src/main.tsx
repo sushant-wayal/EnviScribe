@@ -18,7 +18,7 @@ const router = createBrowserRouter(
       <Route path="home" element={<HomePage />} />
       <Route path="device/:deviceId" element={<SensorsPage />} />
       <Route path="sensor/:sensorId" element={<LogsPage />} />
-      <Route path='statistics/:sensorId' element={<StatisticsPage/>} />
+      <Route path='statistics/:deviceId' element={<StatisticsPage/>} />
       <Route path="about" element={<AboutPage/>} />
       <Route path="privacy" element={<PrivacyPage/>} />
       <Route path="contact" element={<ContactPage/>} />
