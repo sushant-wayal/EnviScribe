@@ -1,5 +1,22 @@
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from "../ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Pencil } from "lucide-react";
+import DeleteAlertIcon from "./DeleteAlertIcon";
+
 
 interface DeviceCardProps {
   id: string;
@@ -20,7 +37,7 @@ const DeviceCard : React.FC<DeviceCardProps> = ({
   sensors
 }) => {
   return (
-    <Link className="mx-5" to={`/device/${id}`}>
+    <Link className="mx-10" to={`/device/${id}`}>
       <Card className="flex justify-between items-center">
         <CardHeader>
           <CardTitle>{name}</CardTitle>
@@ -32,6 +49,20 @@ const DeviceCard : React.FC<DeviceCardProps> = ({
           <CardDescription className="text-center">{latitude}</CardDescription>
           <CardDescription className="text-center">{longitude}</CardDescription>
           <CardDescription>{sensors.toString()} sensors</CardDescription>
+          {/* <DropdownMenu>
+            <DropdownMenuTrigger>
+              <DropdownMenuLabel>⋮</DropdownMenuLabel>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem className="flex justify-start items-center gap-3">
+                <Pencil size={15}/>
+                <p>Edit</p>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <DeleteAlertIcon/>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu> */}
         </CardFooter>
       </Card>
     </Link>

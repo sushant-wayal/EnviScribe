@@ -8,10 +8,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import AddDeviceForm from "./AddDeviceForm";
+import { Device } from "../Pages/home";
+import { Dispatch, SetStateAction } from "react";
 
-interface AddDeviceProps {}
+interface AddDeviceProps {
+  setDevices: Dispatch<SetStateAction<Device[]>>;
+}
 
-const AddDevice : React.FC<AddDeviceProps> = () => {
+const AddDevice : React.FC<AddDeviceProps> = ({ setDevices }) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -25,7 +29,7 @@ const AddDevice : React.FC<AddDeviceProps> = () => {
             Add New Device
           </AlertDialogTitle>
           <AlertDialogDescription asChild>
-            <AddDeviceForm/>
+            <AddDeviceForm setDevices={setDevices}/>
           </AlertDialogDescription>
         </AlertDialogHeader>
       </AlertDialogContent>

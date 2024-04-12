@@ -9,7 +9,7 @@ import AddDevice from "../Components/AddDevice";
 
 interface HomePageProps {}
 
-type Device = {
+export type Device = {
   id: string;
   name: string;
   location: {
@@ -41,7 +41,7 @@ const HomePage : React.FC<HomePageProps> = () => {
     <>
       <Navbar />
       <div className="relative">
-        <AddDevice />
+        <AddDevice setDevices={setDevices}/>
         <Map
           center={calculateCenter()}
           zoom={13}

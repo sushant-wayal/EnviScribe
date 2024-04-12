@@ -53,11 +53,12 @@ const Map: React.FC<MapProps> = ({ className, center, zoom, markers }) => {
         chunkedLoading
         iconCreateFunction={createCustomClusterIcon}
       >
-        {markers && markers.map(({ position, popup, status }) => (
-          <Marker key={position.toString()} position={position} icon={status == "Normal" ? customIcon : customIconDanger}>
+        {markers && markers.map(({ position, popup, status }) => {
+          console.log("position",position)
+          return <Marker key={position.toString()} position={position} icon={status == "Normal" ? customIcon : customIconDanger}>
             <Popup>{popup}</Popup>
           </Marker>
-        ))}
+        })}
       </MarkerClusterGroup>
     </MapContainer>
   );

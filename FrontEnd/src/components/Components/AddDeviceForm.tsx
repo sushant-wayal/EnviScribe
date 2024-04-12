@@ -12,23 +12,26 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { AlertDialogAction, AlertDialogCancel, AlertDialogFooter } from "../ui/alert-dialog";
 import axios from "axios";
 import { domain } from "@/constants";
+import { Device } from "../Pages/home";
 
-interface AddDeviceFormProps {}
+interface AddDeviceFormProps {
+  setDevices: Dispatch<SetStateAction<Device[]>>;
+}
 
-const AddDeviceForm: React.FC<AddDeviceFormProps> = ({}) => {
+const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices }) => {
   const alertDialogAction = useRef<HTMLButtonElement>(null)
   const search = useRef<HTMLDivElement>(null);
   const [selectedSensors, setSelectedSensors] = useState<string[]>([])
   const [sensorName, setSensorName] = useState<string>("")
   const [sensors, setSensors] = useState<string[]>(["hi","hello","yo yo","sab thik","hi","hello","yo yo","sab thik"]);
   const getSensors = async (query : string) => {
-    // const { data } = await axios.get(`${domain}/api/v1/sensors/${query}`);
-    // setSensors(data);
+    const { data } = await axios.get(`${domain}/api/v1/sensors/${query}`);
+    setSensors(data);
     search.current?.classList.add("flex");
     search.current?.classList.remove("hidden");
   }
@@ -59,7 +62,32 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({}) => {
       }
     })
   },[])
-  const onSubmit = async(_values: z.infer<typeof AddDeviceFormSchema>) => {}
+  const onSubmit = async(values: z.infer<typeof AddDeviceFormSchema>) => {
+    const { deviceName, longitude, latitude, sensors } = values;
+    // setDevices(prev => [...prev,{
+    //   id: "1",
+    //   name: deviceName,
+    //   location: {
+    //     latitude: parseFloat(latitude),
+    //     longitude: parseFloat(longitude)
+    //   },
+    //   sensors: sensors,
+    //   status: "Normal"
+    // }]);
+    const { data } = await axios.post(`${domain}/api/v1/devices`, {
+      name: deviceName,
+      location: {
+        longitude: parseFloat(longitude),
+        latitude: parseFloat(latitude)
+      },
+      sensors
+    });
+    if (data) {
+      form.reset();
+      setSelectedSensors([]);
+      setDevices(prev => [...prev, data]);
+    }
+  }
   return (
     <Form {...form}>
       <form
