@@ -14,8 +14,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Pencil } from "lucide-react";
-import DeleteAlertIcon from "./DeleteAlertIcon";
+import DeleteAlertDialog from "./DeleteAlertDialog";
+import AddDevice from "./AddDevice";
+import { Dispatch, SetStateAction } from "react";
+import { Device } from "../Pages/home";
 
 
 interface DeviceCardProps {
@@ -27,6 +29,7 @@ interface DeviceCardProps {
     longitude: number
   };
   sensors: Number;
+  setDevices: Dispatch<SetStateAction<Device[]>>;
 }
 
 const DeviceCard : React.FC<DeviceCardProps> = ({
@@ -34,35 +37,35 @@ const DeviceCard : React.FC<DeviceCardProps> = ({
   name,
   status,
   location : { latitude, longitude },
-  sensors
+  sensors,
+  setDevices
 }) => {
   return (
     <Link className="mx-10" to={`/device/${id}`}>
-      <Card className="flex justify-between items-center">
+      <Card className="flex justify-between items-center mx-5">
         <CardHeader>
           <CardTitle>{name}</CardTitle>
         </CardHeader>
         <CardContent>
           {status}
         </CardContent>
-        <CardFooter className="flex items-center gap-10">
+        <CardFooter className="flex items-center gap-10" onClick={(e) => e.stopPropagation()}>
           <CardDescription className="text-center">{latitude}</CardDescription>
           <CardDescription className="text-center">{longitude}</CardDescription>
           <CardDescription>{sensors.toString()} sensors</CardDescription>
-          {/* <DropdownMenu>
+          <DropdownMenu>
             <DropdownMenuTrigger>
               <DropdownMenuLabel>⋮</DropdownMenuLabel>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem className="flex justify-start items-center gap-3">
-                <Pencil size={15}/>
-                <p>Edit</p>
+            <DropdownMenuContent className="z-[1002]">
+              <DropdownMenuItem className="p-0 mb-2">
+                <AddDevice work="edit" deviceId={id} setDevices={setDevices}/>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <DeleteAlertIcon/>
+              <DropdownMenuItem className="p-0">
+                <DeleteAlertDialog/>
               </DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu> */}
+          </DropdownMenu>
         </CardFooter>
       </Card>
     </Link>

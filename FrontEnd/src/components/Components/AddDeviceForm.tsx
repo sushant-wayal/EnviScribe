@@ -21,24 +21,10 @@ import { Device } from "../Pages/home";
 
 interface AddDeviceFormProps {
   setDevices: Dispatch<SetStateAction<Device[]>>;
+  deviceId?: string;
 }
 
-const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices }) => {
-  const alertDialogAction = useRef<HTMLButtonElement>(null)
-  const search = useRef<HTMLDivElement>(null);
-  const [selectedSensors, setSelectedSensors] = useState<string[]>([])
-  const [sensorName, setSensorName] = useState<string>("")
-  const [sensors, setSensors] = useState<string[]>(["hi","hello","yo yo","sab thik","hi","hello","yo yo","sab thik"]);
-  const getSensors = async (query : string) => {
-    const { data } = await axios.get(`${domain}/api/v1/sensors/${query}`);
-    setSensors(data);
-    search.current?.classList.add("flex");
-    search.current?.classList.remove("hidden");
-  }
-  const addSensor = (sensor: string) => {
-    setSelectedSensors((prev) => [sensor, ...prev])
-    setSensorName("")
-  }
+const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) => {
   const form = useForm<z.infer<typeof AddDeviceFormSchema>>({
     resolver: zodResolver(AddDeviceFormSchema),
     defaultValues: {
@@ -47,7 +33,35 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices }) => {
       latitude: "0",
       sensors: []
     }
-  })
+  });
+  useEffect(() => {
+    if (deviceId) {
+      const getDevice = async () => {
+        const { data } = await axios.get(`${domain}/api/v1/devices/${deviceId}`);
+        form.setValue("deviceName", data.name);
+        form.setValue("longitude", data.location.longitude);
+        form.setValue("latitude", data.location.latitude);
+        form.setValue("sensors", data.sensors);
+        setSelectedSensors(data.sensors);
+      }
+      getDevice();
+    }
+  },[deviceId]);
+  const alertDialogAction = useRef<HTMLButtonElement>(null)
+  const search = useRef<HTMLDivElement>(null);
+  const [selectedSensors, setSelectedSensors] = useState<string[]>(form.getValues().sensors || [])
+  const [sensorName, setSensorName] = useState<string>("")
+  const [fetchedSensors, setFetchedSensors] = useState<string[]>(["hi","hello","yo yo","sab thik","hi","hello","yo yo","sab thik"]);
+  const getSensors = async (query : string) => {
+    const { data } = await axios.get(`${domain}/api/v1/sensors/${query}`);
+    setFetchedSensors(data);
+    search.current?.classList.add("flex");
+    search.current?.classList.remove("hidden");
+  }
+  const addSensor = (sensor: string) => {
+    setSelectedSensors((prev) => [sensor, ...prev])
+    setSensorName("")
+  }
   useEffect(() => {
     const { submitCount, errors : { sensors, deviceName, latitude, longitude } } = form.formState;
     if (submitCount > 0 && sensors == undefined && deviceName == undefined && longitude == undefined && latitude == undefined) {
@@ -85,7 +99,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices }) => {
     if (data) {
       form.reset();
       setSelectedSensors([]);
-      setDevices(prev => [...prev, data]);
+      deviceId ? setDevices(prev => [...prev, data]) : setDevices(prev => prev.map(device => device.id == deviceId ? data : device));
     }
   }
   return (
@@ -178,8 +192,8 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices }) => {
                     }
                   }}
                 />
-                <div className={`absolute top-[100%] w-full max-h-[100px] flex flex-col border-black border-solid rounded bg-white  overflow-x-auto ${sensors.length != 0 ? "border-2 p-2" : ""}`} ref={search}>
-                  {sensors.map((sensor, index) => (
+                <div className={`absolute top-[100%] w-full max-h-[100px] flex flex-col border-black border-solid rounded bg-white  overflow-x-auto ${fetchedSensors.length != 0 ? "border-2 p-2" : ""}`} ref={search}>
+                  {fetchedSensors.map((sensor, index) => (
                     <p
                       key={index}
                       onClick={() => {
@@ -199,6 +213,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices }) => {
                 onClick={() => {
                   setSensorName("");
                 }}
+                variant={"destructive"}
               >
                 x
               </Button>
@@ -212,7 +227,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices }) => {
               <span>
                 {sensor}
               </span>
-              <button
+              <Button
                 className="bg-gray-900 w-5 h-5 rounded text-white flex items-center justify-center"
                 type="button"
                 onClick={() => {
@@ -220,9 +235,10 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices }) => {
                   document.querySelector(`sensor${index}`)?.remove();
                   form.setValue("sensors", selectedSensors)
                 }}
+                variant={"destructive"}
               >
                 x
-              </button>
+              </Button>
             </div>
           ))}
         </div>

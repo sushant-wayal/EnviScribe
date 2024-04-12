@@ -41,7 +41,7 @@ const HomePage : React.FC<HomePageProps> = () => {
     <>
       <Navbar />
       <div className="relative">
-        <AddDevice setDevices={setDevices}/>
+        <AddDevice work="add" setDevices={setDevices}/>
         <Map
           center={calculateCenter()}
           zoom={13}
@@ -55,7 +55,7 @@ const HomePage : React.FC<HomePageProps> = () => {
       <div className="flex flex-col gap-3">
         {devices.map(device => {
           const { id, name, location, sensors, status } = device;
-          return <DeviceCard key={id} id={id} name={name} status={status} location={location} sensors={sensors.length} />;
+          return <DeviceCard key={id} id={id} name={name} status={status} location={location} sensors={sensors.length} setDevices={setDevices}/>;
         })}
       </div>
     </>
