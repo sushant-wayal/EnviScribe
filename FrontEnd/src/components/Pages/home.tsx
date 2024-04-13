@@ -3,9 +3,8 @@ import Navbar from "../Components/Navbar"
 import axios from "axios"
 import DeviceCard from "../Components/DeviceCard";
 import Map from "../Components/Map";
-import { domain } from "@/constants";
+import { domain, tokenKey } from "@/constants";
 import AddDevice from "../Components/AddDevice";
-import Devices from "../../../../data/devices.json";
 
 interface HomePageProps {}
 
@@ -21,17 +20,24 @@ export type Device = {
 }
 
 const HomePage : React.FC<HomePageProps> = () => {
-  const [devices, setDevices] = useState<Device[]>(Devices.devices);
+  const [devices, setDevices] = useState<Device[]>([]);
   useEffect(() => {
     const getDevices = async () => {
-      const { data } = await axios.get(`${domain}/api/v1/devices`);
-      setDevices(data);
+      const { data } = await axios.get(`${domain}/api/v1/devices`,{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(tokenKey)}`
+        }
+      });
+      setDevices({
+        ...data,
+        sensors: data.sensors.map((sensor: any) => sensor._id)
+      });
     };
     getDevices();
   },[devices]);
   const calculateCenter = (): number[] => {
     for (let i = 0; i < devices.length; i++) {
-      if (devices[i].status === "Danger") {
+      if (devices[i].status !== "Normal") {
         return [devices[i].location.latitude, devices[i].location.longitude];
       }
     }

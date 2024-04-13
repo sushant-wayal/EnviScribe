@@ -7,8 +7,17 @@ import { Sensor } from "../models/sensor.model.js";
 
 export const getAllDevices = asyncHandler(async (req, res) => {
     const { id } = req.user;
-    const { devices } = await User.findById(id).select('institution').populate('institution').select('devices').populate('devices');
-    res.status(200).json(new ApiResponse(200, devices));
+    const { devices } = await User.findById(id).select('institution').populate('institution').select('devices').populate('devices').select('_id name location sensors').populate('sensors');
+    const { sensors } = devices;
+    let status = "Normal";
+    for (const sensor of sensors) {
+        const recentAlert = await Sensor.findById(sensor._id).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
+        if (recentAlert.createdAt > Date.now() - 300000) {
+            status = "Alert";
+            break;
+        }
+    }
+    res.status(200).json(new ApiResponse(200, {...devices, status}));
 })
 
 export const getDevice = asyncHandler(async (req, res) => {
