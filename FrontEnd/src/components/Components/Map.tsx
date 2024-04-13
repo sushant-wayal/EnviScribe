@@ -4,7 +4,7 @@ import {
   Popup,
   TileLayer
 } from "react-leaflet";
-import { Icon, divIcon } from "leaflet";
+import { Icon, LatLngTuple, divIcon } from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import "leaflet/dist/leaflet.css";
 
@@ -43,7 +43,7 @@ const Map: React.FC<MapProps> = ({ className, center, zoom, markers }) => {
   }
   return (
     <MapContainer
-    center={center}
+    center={center as LatLngTuple}
     zoom={zoom}
     className={`w-[95vw] h-[50vh] mx-auto mb-5 rounded-3xl rounded-br-none ${className}`} >
       <TileLayer
@@ -55,7 +55,7 @@ const Map: React.FC<MapProps> = ({ className, center, zoom, markers }) => {
       >
         {markers && markers.map(({ position, popup, status }) => {
           console.log("position",position)
-          return <Marker key={position.toString()} position={position} icon={status == "Normal" ? customIcon : customIconDanger}>
+          return <Marker key={position.toString()} position={position as LatLngTuple} icon={status == "Normal" ? customIcon : customIconDanger}>
             <Popup>{popup}</Popup>
           </Marker>
         })}
