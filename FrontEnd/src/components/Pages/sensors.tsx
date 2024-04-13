@@ -22,11 +22,17 @@ type Sensor = {
 
 const SensorsPage : React.FC<SensorsPageProps> = () => {
   const { deviceId } = useParams();
-  const [sensors, setSensors] = useState<Sensor[]>(Sensor.sensors);
+  const [sensors, setSensors] = useState<Sensor[]>([]);
   useEffect(() => {
     const getSensors = async () => {
       const { data } = await axios.get(`${domain}/api/v1/sensors/${deviceId}`);
-      setSensors(data);
+      setSensors(data.map((sensor: any) => ({
+        ...sensor,
+        logs: sensor.logs.map((log: any) => ({
+            ...log,
+            timestamp: log.createdAt.toString()
+          }))
+      })));
     };
     getSensors();
   },[sensors]);

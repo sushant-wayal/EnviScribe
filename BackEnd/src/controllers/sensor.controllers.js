@@ -19,7 +19,7 @@ export const getAllSensors = asyncHandler(async (req, res) => {
             }
             return res.status(200).json(new ApiResponse(200, sensors));
         } else {
-            const { sensors } = await Device.findById(deviceId).select("sensors").populate("sensors");
+            const { sensors } = await Device.findById(deviceId).select("sensors").populate("sensors").populate("logs");
             if (!sensors) {
                 throw new ApiError(404, 'Device not found');
             }
