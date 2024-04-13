@@ -6,7 +6,6 @@ import Navbar from "../Components/Navbar";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import ReadingsTable from "../Components/ReadingsTable";
-import Logs from "../../data/logs.json";
 import * as XLSX from 'xlsx';
 import { domain } from "@/constants";
 

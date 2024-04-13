@@ -6,11 +6,34 @@ import { Sensor } from "../models/sensor.model.js";
 
 export const getAllSensors = asyncHandler(async (req, res) => {
     const { deviceId } = req.params;
-    const { sensors } = await Device.findById(deviceId).select("sensors").populate("sensors");
-    if (!sensors) {
-        throw new ApiError(404, 'Device not found');
+    const { query } = req.query;
+    if (deviceId) {
+        if (query) {
+            const { sensors } = await Device.findById(deviceId).select("sensors").populate({
+                path: "sensors",
+                match: { name: { $regex: query, $options: "i" } }
+            });
+            sensors = sensors.filter((sensor, index, self) => self.findIndex(s => s.name === sensor.name) === index);
+            if (!sensors) {
+                throw new ApiError(404, 'Device not found');
+            }
+            return res.status(200).json(new ApiResponse(200, sensors));
+        } else {
+            const { sensors } = await Device.findById(deviceId).select("sensors").populate("sensors");
+            if (!sensors) {
+                throw new ApiError(404, 'Device not found');
+            }
+            return res.status(200).json(new ApiResponse(200, sensors));
+        }
+    } else {
+        if (query) {
+            const sensors = await Sensor.find({ name: { $regex: query, $options: "i" } });
+            return res.status(200).json(new ApiResponse(200, sensors));
+        } else {
+            const sensors = await Sensor.find();
+            return res.status(200).json(new ApiResponse(200, sensors));
+        }
     }
-    res.status(200).json(new ApiResponse(200, sensors));
 });
 
 export const getSensor = asyncHandler(async (req, res) => {

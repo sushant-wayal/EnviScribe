@@ -1,5 +1,4 @@
 import { LineChart } from "@mui/x-charts/LineChart";
-import logsdata from "../../data/logs.json";
 import Navbar from "../Components/Navbar";
 import { useState } from "react";
 import { useParams } from "react-router-dom";

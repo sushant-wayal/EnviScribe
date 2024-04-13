@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const sensorSchema = new mongoose.Schema({
+    display : {
+        type: Boolean,
+        default: false,
+    },
     device: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Device",

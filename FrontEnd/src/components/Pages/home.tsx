@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Navbar from "../Components/Navbar"
 import axios from "axios"
 import DeviceCard from "../Components/DeviceCard";
-import Devices from "../../data/devices.json";
 import Map from "../Components/Map";
 import { domain } from "@/constants";
 import AddDevice from "../Components/AddDevice";

@@ -13,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Devices from "../../data/devices.json";
 import DatePicker from "../ui/date-picker";
 import { useEffect } from "react";
 

@@ -13,6 +13,9 @@ router.route("/")
     .get(isLoggedIn, getAllDevices)
     .post(createDevice);
 
+router.route("/create")
+    .post(isLoggedIn, createDevice);
+
 router.route("/:id")
     .get(getDevice)
     .delete(deleteDevice);

@@ -9,6 +9,9 @@ import {
 
 const router = Router();
 
+router.route("/")
+    .get(getAllSensors)
+
 router.route("/:deviceId")
     .get(getAllSensors)
     .post(createSensor);

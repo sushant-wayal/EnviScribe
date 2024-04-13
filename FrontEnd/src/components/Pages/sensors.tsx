@@ -3,7 +3,6 @@ import Navbar from "../Components/Navbar";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import SensorCard from "../Components/SensorCard";
-import Sensor from "../../data/sensors.json";
 import { domain } from "@/constants";
 
 interface SensorsPageProps {}

@@ -8,6 +8,7 @@ const deviceSchema = new mongoose.Schema({
     institution: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Institution",
+        default: null,
         required: true,
     },
     sensors: [{
@@ -16,7 +17,24 @@ const deviceSchema = new mongoose.Schema({
         default: [],
     }],
     location: {
-        type: String,
+        type: {
+            longitude: {
+                type: Number,
+                required: true,
+                validate: {
+                    validator: value => value >= -180 && value <= 180,
+                    message: 'Invalid longitude',
+                },
+            },
+            latitude: {
+                type: Number,
+                required: true,
+                validate: {
+                    validator: value => value >= -90 && value <= 90,
+                    message: 'Invalid latitude',
+                },
+            },
+        },
         required: true,
     },
 }, { timestamps: true });
