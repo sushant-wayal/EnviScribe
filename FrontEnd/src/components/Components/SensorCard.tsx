@@ -30,18 +30,8 @@ const SensorCard : React.FC<SensorCardProps> = ({
   maxValue,
   logs
 }) => {
-  const data = logs.map((log, index) => {
-    if (index >= 3) {
-      return null;
-    }
-    return parseFloat(log.value.toString());
-  });
-  const labels = logs.map((log, index) => {
-    if (index >= 3) {
-      return null;
-    }
-    return log.timestamp;
-  });
+  const data = logs.map(log => parseFloat(log.value.toString()));
+  const labels = logs.map(log => log.timestamp);
   return (
     <Link className="w-auto max-h-[500px] mx-auto my-5" to={`/statistics/${id}`}>
       <Card className="px-3">
