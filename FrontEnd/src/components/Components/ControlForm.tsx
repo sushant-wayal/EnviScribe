@@ -14,19 +14,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import DatePicker from "../ui/date-picker";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { domain } from "@/constants";
+import axios from "axios";
 
 interface ControlFormProps {
   resetFlag: boolean;
 }
 
 const ControlForm: React.FC<ControlFormProps> = ({ resetFlag }) => {
-  const sensors = ["Temperature", "Humidity", "Pressure", "Light", "Moisture"];
-  const devices = Devices.devices.map((device) => device.name);
-  const intervals = ["Hour", "Day", "Week", "Month", "Year"];
   const defaultValues = {
-    deviceName: "Device 1",
-    sensorName: "Temperature",
+    deviceName: "",
+    sensorName: "",
     interval: "Hour",
     startDate: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
     endDate: new Date()
@@ -34,6 +33,37 @@ const ControlForm: React.FC<ControlFormProps> = ({ resetFlag }) => {
   const form = useForm({
     defaultValues
   });
+  const [sensors, setSensors] = useState<{
+    name: string;
+    id: string;
+  }[]>([]);
+  const [devices, setDevices] = useState<{
+    name: string;
+    id: string;
+  }[]>([]);
+  useEffect(() => {
+    const fetchDevices = async () => {
+      const { data } = await axios.get(`${domain}/devices`);
+      setDevices(data.map((device: any) => {
+        device.name,
+        device._id
+      }));
+      form.setValue("deviceName", data[0]._id);
+    }
+    fetchDevices();
+  }, []);
+  useEffect(() => {
+    const fetchSensors = async () => {
+      const { data : { sensors } } = await axios.get(`${domain}/devices/${form.getValues().deviceName}`);
+      setSensors(sensors.map((sensor: any) => {
+        sensor.name,
+        sensor._id
+      }));
+      form.setValue("sensorName", sensors[0]._id);
+    }
+    fetchSensors();
+  }, [form.getValues().deviceName]);
+  const intervals = ["Hour", "Day", "Week", "Month", "Year"];
   useEffect(() => {
     form.reset(defaultValues);
   }, [resetFlag]);
@@ -54,7 +84,10 @@ const ControlForm: React.FC<ControlFormProps> = ({ resetFlag }) => {
                     <SelectValue placeholder="Select Device" />
                   </SelectTrigger>
                   <SelectContent>
-                    {devices.map((device) => <SelectItem key={device} value={device}>{device}</SelectItem>)}
+                    {devices.map((device) => {
+                      const { name, id } = device;
+                      return <SelectItem key={id} value={id}>{name}</SelectItem>
+                    })}
                   </SelectContent>
                 </Select>
               </FormControl>
@@ -76,7 +109,10 @@ const ControlForm: React.FC<ControlFormProps> = ({ resetFlag }) => {
                       <SelectValue placeholder="Select Sensor" />
                     </SelectTrigger>
                     <SelectContent>
-                      {sensors.map((sensor) => <SelectItem key={sensor} value={sensor}>{sensor}</SelectItem>)}
+                      {sensors.map((sensor) => {
+                        const { name, id } = sensor;
+                        return <SelectItem key={id} value={id}>{name}</SelectItem>
+                      })}
                     </SelectContent>
                   </Select>
                 </FormControl>
