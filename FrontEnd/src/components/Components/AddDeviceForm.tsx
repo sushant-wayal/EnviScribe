@@ -25,31 +25,46 @@ interface AddDeviceFormProps {
 }
 
 const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) => {
-  const form = useForm<z.infer<typeof AddDeviceFormSchema>>({
-    resolver: zodResolver(AddDeviceFormSchema),
-    defaultValues: {
-      deviceName: "",
-      longitude: "0",
-      latitude: "0",
-      sensors: []
-    }
+  const [selectedSensors, setSelectedSensors] = useState<string[]>([])
+  const [defaultValues, setDefaultValues] = useState<z.infer<typeof AddDeviceFormSchema> | undefined>({
+    deviceName : "Device 6",
+    longitude : "98",
+    latitude : "86",
+    sensors : ["sensor1", "sensor2", "sensor3"]
   });
   useEffect(() => {
+    console.log("device Id",deviceId)
     if (deviceId) {
+      setDefaultValues(() => ({
+        deviceName : "Device 6",
+        longitude : "98",
+        latitude : "86",
+        sensors : ["sensor1", "sensor2", "sensor3"]
+      }))
+      console.log("default values", defaultValues)
+      setSelectedSensors(defaultValues?.sensors || []);
       const getDevice = async () => {
-        const { data } = await axios.get(`${domain}/api/v1/devices/${deviceId}`);
-        form.setValue("deviceName", data.name);
-        form.setValue("longitude", data.location.longitude);
-        form.setValue("latitude", data.location.latitude);
-        form.setValue("sensors", data.sensors);
-        setSelectedSensors(data.sensors);
+        const { data : { deviceName, location : { longitude, latitude }, sensors } } = await axios.get(`${domain}/api/v1/devices/${deviceId}`);
+        form.setValue("deviceName", deviceName);
+        form.setValue("longitude", longitude);
+        form.setValue("latitude", latitude);
+        form.setValue("sensors",  sensors);
+        setSelectedSensors(sensors);
       }
       getDevice();
     }
   },[deviceId]);
+  const form = useForm<z.infer<typeof AddDeviceFormSchema>>({
+    resolver: zodResolver(AddDeviceFormSchema),
+    defaultValues: defaultValues || {
+      deviceName: "",
+      longitude: "",
+      latitude: "",
+      sensors: []
+    }
+  });
   const alertDialogAction = useRef<HTMLButtonElement>(null)
   const search = useRef<HTMLDivElement>(null);
-  const [selectedSensors, setSelectedSensors] = useState<string[]>(form.getValues().sensors || [])
   const [sensorName, setSensorName] = useState<string>("")
   const [fetchedSensors, setFetchedSensors] = useState<string[]>(["hi","hello","yo yo","sab thik","hi","hello","yo yo","sab thik"]);
   const getSensors = async (query : string) => {
@@ -99,7 +114,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
     if (data) {
       form.reset();
       setSelectedSensors([]);
-      deviceId ? setDevices(prev => [...prev, data]) : setDevices(prev => prev.map(device => device.id == deviceId ? data : device));
+      !deviceId ? setDevices(prev => [...prev, data]) : setDevices(prev => prev.map(device => device.id == deviceId ? data : device));
     }
   }
   return (
@@ -128,7 +143,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
           )}
         />
         <div className="w-full flex justify-between">
-          <FormField 
+          <FormField
             control={form.control}
             name="longitude"
             render={({ field }) => (
@@ -138,6 +153,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
                 </FormLabel>
                 <FormControl>
                   <Input
+                    readOnly={deviceId ? true : false}
                     type="number"
                     placeholder="Longitude"
                     {...field}
@@ -157,6 +173,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
                 </FormLabel>
                 <FormControl>
                   <Input
+                    readOnly={deviceId ? true : false}
                     type="number"
                     placeholder="Latitude"
                     {...field}
