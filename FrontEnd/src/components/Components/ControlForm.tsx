@@ -14,15 +14,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import DatePicker from "../ui/date-picker";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { domain } from "@/constants";
 import axios from "axios";
+import { Log } from "../Pages/statistics";
 
 interface ControlFormProps {
   resetFlag: boolean;
+  deviceId: string;
+  sensorId: string;
+  setLogs: Dispatch<SetStateAction<Log[]>>;
+  setLabels: Dispatch<SetStateAction<string[]>>;
+  setStartDate: Dispatch<SetStateAction<Date>>;
+  setEndDate: Dispatch<SetStateAction<Date>>;
+  setSensorId: Dispatch<SetStateAction<string>>;
 }
 
-const ControlForm: React.FC<ControlFormProps> = ({ resetFlag }) => {
+const ControlForm: React.FC<ControlFormProps> = ({ resetFlag, deviceId, sensorId, setLogs, setLabels, setStartDate, setEndDate, setSensorId }) => {
   const defaultValues = {
     deviceName: "",
     sensorName: "",
@@ -42,13 +50,22 @@ const ControlForm: React.FC<ControlFormProps> = ({ resetFlag }) => {
     id: string;
   }[]>([]);
   useEffect(() => {
+    setStartDate(form.getValues().startDate);
+  }, [form.getValues().startDate]);
+  useEffect(() => {
+    setEndDate(form.getValues().endDate);
+  }, [form.getValues().endDate]);
+  useEffect(() => {
+    setSensorId(form.getValues().sensorName);
+  }, [form.getValues().sensorName]);
+  useEffect(() => {
     const fetchDevices = async () => {
       const { data } = await axios.get(`${domain}/devices`);
       setDevices(data.map((device: any) => {
         device.name,
         device._id
       }));
-      form.setValue("deviceName", data[0]._id);
+      form.setValue("deviceName", data.filter((device: any) => device.id === deviceId)[0]._id);
     }
     fetchDevices();
   }, []);
@@ -59,11 +76,27 @@ const ControlForm: React.FC<ControlFormProps> = ({ resetFlag }) => {
         sensor.name,
         sensor._id
       }));
-      form.setValue("sensorName", sensors[0]._id);
+      const defaultSensorId = sensors.filter((sensor: any) => sensor.id === sensorId)[0]._id;
+      form.setValue("sensorName", defaultSensorId ? defaultSensorId : sensors[0]._id);
     }
     fetchSensors();
   }, [form.getValues().deviceName]);
   const intervals = ["Hour", "Day", "Week", "Month", "Year"];
+  const fetchLogs = async () => {
+    const { data } = await axios.get(`${domain}/api/v1/logs/${form.getValues().sensorName}?startDate=${form.getValues().startDate}&endDate=${form.getValues().endDate}&interval=${form.getValues().interval}`);
+    setLogs(data);
+    setLabels(data.map((log: Log) => log.timestamp));
+  };
+  useEffect(() => {
+    const currDeviceId = form.getValues().deviceName;
+    const currSensorId = form.getValues().sensorName;
+    const startDate = form.getValues().startDate;
+    const endDate = form.getValues().endDate;
+    const interval = form.getValues().interval;
+    if (currDeviceId && currSensorId && startDate && endDate && interval) {
+      fetchLogs();
+    }
+  },[form.getValues()]);
   useEffect(() => {
     form.reset(defaultValues);
   }, [resetFlag]);
@@ -79,7 +112,7 @@ const ControlForm: React.FC<ControlFormProps> = ({ resetFlag }) => {
                 Device
               </FormLabel>
               <FormControl>
-                <Select onValueChange={field.onChange} defaultValue={field.value} value={form.getValues().deviceName}>
+                <Select onValueChange={field.onChange} defaultValue={field.value} value={devices.filter(device => device.id === form.getValues().deviceName)[0].name}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Select Device" />
                   </SelectTrigger>
@@ -104,7 +137,7 @@ const ControlForm: React.FC<ControlFormProps> = ({ resetFlag }) => {
                   Sensor
                 </FormLabel>
                 <FormControl>
-                  <Select onValueChange={field.onChange} defaultValue={field.value} value={form.getValues().sensorName}>
+                  <Select onValueChange={field.onChange} defaultValue={field.value} value={sensors.filter(sensor => sensor.id === form.getValues().sensorName)[0].name}>
                     <SelectTrigger className="w-[180px]">
                       <SelectValue placeholder="Select Sensor" />
                     </SelectTrigger>

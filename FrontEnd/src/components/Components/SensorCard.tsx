@@ -10,6 +10,7 @@ import {
 import { LineChart } from "@mui/x-charts/LineChart";
 
 interface SensorCardProps {
+  deviceId: string;
   id: string;
   name: string;
   status: string;
@@ -23,6 +24,7 @@ interface SensorCardProps {
 }
 
 const SensorCard : React.FC<SensorCardProps> = ({
+  deviceId,
   id,
   name,
   status,
@@ -33,7 +35,7 @@ const SensorCard : React.FC<SensorCardProps> = ({
   const data = logs.map(log => parseFloat(log.value.toString()));
   const labels = logs.map(log => log.timestamp);
   return (
-    <Link className="w-auto max-h-[500px] mx-auto my-5" to={`/statistics/${id}`}>
+    <Link className="w-auto max-h-[500px] mx-auto my-5" to={`/statistics/${deviceId}/${id}`}>
       <Card className="px-3">
         <CardHeader className="border-b-2 border-black border-solid">
           <CardTitle>{name}</CardTitle>

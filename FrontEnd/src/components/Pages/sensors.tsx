@@ -42,7 +42,7 @@ const SensorsPage : React.FC<SensorsPageProps> = () => {
       <div className="grid grid-cols-4">
         {sensors.map((sensor, index) => {
           const { id, name, status, minValue, maxValue, logs } = sensor;
-          return <SensorCard key={index} id={id} name={name} status={status} minValue={minValue} maxValue={maxValue} logs={logs} />
+          return <SensorCard key={index} deviceId={deviceId || ""} id={id} name={name} status={status} minValue={minValue} maxValue={maxValue} logs={logs} />
         })}
       </div>
     </>

@@ -5,7 +5,6 @@ import './global.css'
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromChildren } from 'react-router-dom'
 import { HomePage } from './components/index.ts'
 import SensorsPage from './components/Pages/sensors.tsx'
-import LogsPage from './components/Pages/logs.tsx'
 import StatisticsPage from './components/Pages/statistics.tsx'
 import AboutPage from './components/Pages/about.tsx'
 import PrivacyPage from './components/Pages/privacy.tsx'
@@ -17,8 +16,7 @@ const router = createBrowserRouter(
     <Route path="/" element={<App />} >
       <Route path="home" element={<HomePage />} />
       <Route path="device/:deviceId" element={<SensorsPage />} />
-      <Route path="sensor/:sensorId" element={<LogsPage />} />
-      <Route path='statistics/:deviceId' element={<StatisticsPage/>} />
+      <Route path='statistics/:deviceId/:sensorId' element={<StatisticsPage/>} />
       <Route path="about" element={<AboutPage/>} />
       <Route path="privacy" element={<PrivacyPage/>} />
       <Route path="contact" element={<ContactPage/>} />

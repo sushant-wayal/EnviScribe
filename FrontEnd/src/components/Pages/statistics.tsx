@@ -2,8 +2,6 @@ import { LineChart } from "@mui/x-charts/LineChart";
 import Navbar from "../Components/Navbar";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-// import { domain } from "@/constants";
-// import axios from "axios";
 import {
   Card,
   CardHeader,
@@ -15,8 +13,11 @@ import {
 import { Button } from "../ui/button";
 import ControlForm from "../Components/ControlForm";
 import * as XLSX from 'xlsx';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import axios from "axios";
+import { domain } from "@/constants";
 
-type Log = {
+export type Log = {
   value: string;
   timestamp: string;
   status: string;
@@ -26,10 +27,13 @@ type Log = {
 interface StatisticsPageProps {}
 
 const StatisticsPage: React.FC<StatisticsPageProps> = () => {
-  const { sensorId } = useParams();
-  const [logs, setLogs] = useState(logsdata.logs.map((log) => log.value));
-  const [labels, setLabels] = useState(logsdata.logs.map((log) => log.timestamp));
+  const { deviceId, sensorId } = useParams();
+  const [logs, setLogs] = useState<Log[]>([]);
+  const [labels, setLabels] = useState<string[]>([]);
   const [resetFlag, setResetFlag] = useState(false);
+  const [startDate, setStartDate] = useState(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+  const [endDate, setEndDate] = useState(new Date());
+  const [sensor, setSensor] = useState(sensorId || "");
   const convertJSONtoExcel = (jsonData : Log[]) => {
     const worksheet = XLSX.utils.json_to_sheet(jsonData);
     const workbook = XLSX.utils.book_new();
@@ -47,8 +51,8 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
     link.click();
     document.body.removeChild(link);
   };
-  const DownloadLogs = () => {
-    const excelBuffer = convertJSONtoExcel(logsdata.logs.map((log) => ({ ...log, value: log.value.toString()})));
+  const DownloadLogs = (logsDatas : Log[]) => {
+    const excelBuffer = convertJSONtoExcel(logsDatas.map((logsData) => ({ ...logsData, value: logsData.value})));
     downloadExcel(excelBuffer, 'logs');
   };
   return (
@@ -59,7 +63,7 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
           width={800}
           height={500}
           series={[
-            {data : logs, label: "Temperature"},
+            {data : logs.map(log => parseFloat(log.value)), label: "Temperature"},
           ]}
           xAxis={[{ scaleType: 'point', data: labels }]}
         />
@@ -69,11 +73,26 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
             <CardDescription>Change Controls to see Statistical Changes</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-start justify-start gap-8">
-            <ControlForm resetFlag={resetFlag}/>
+            <ControlForm deviceId={deviceId || ""} sensorId={sensorId || ""} resetFlag={resetFlag} setLabels={setLabels} setLogs={setLogs} setStartDate={setStartDate} setEndDate={setEndDate} setSensorId={setSensor}/>
           </CardContent>
           <CardFooter className=" absolute bottom-0 w-full flex justify-between">
             <Button onClick={() => setResetFlag(prev => !prev)} variant="outline">Reset</Button>
-            <Button onClick={DownloadLogs}>Download Excel</Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Button>Download Excel</Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="z-[1002]">
+                <DropdownMenuItem className="p-0 mb-2">
+                  <Button variant="secondary" onClick={() => DownloadLogs(logs)}>With Intervals</Button>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="p-0">
+                <Button variant="secondary" onClick={async () => {
+                  const { data } = await axios.get(`${domain}/api/v1/logs/${sensor}?startDate=${startDate}&endDate=${endDate}`);
+                  DownloadLogs(data);
+                }}>All Data</Button>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </CardFooter>
         </Card>
       </div>
