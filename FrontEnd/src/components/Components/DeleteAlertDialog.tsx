@@ -11,10 +11,17 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button, buttonVariants } from "../ui/button";
 import { Trash2Icon } from "lucide-react";
+import { Device } from "../Pages/home";
+import axios from "axios";
+import { domain } from "@/constants";
+import { Dispatch, SetStateAction } from "react";
 
-interface DeleteAlertDialogProps {}
+interface DeleteAlertDialogProps {
+  deviceId: string;
+  setDevices: Dispatch<SetStateAction<Device[]>>;
+}
 
-const DeleteAlertDialog : React.FC<DeleteAlertDialogProps> = () => {
+const DeleteAlertDialog : React.FC<DeleteAlertDialogProps> = ({ deviceId, setDevices }) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -39,6 +46,10 @@ const DeleteAlertDialog : React.FC<DeleteAlertDialogProps> = () => {
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             className={buttonVariants({ variant: "destructive" })}
+            onClick={async () => {
+              await axios.delete(`${domain}/api/v1/devices/${deviceId}`);
+              setDevices((prevDevices : Device[]) => prevDevices.filter((device) => device.id !== deviceId));
+            }}
           >
             Continue
           </AlertDialogAction>

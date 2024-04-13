@@ -66,7 +66,10 @@ export const createDevice = asyncHandler(async (req, res) => {
 
 export const deleteDevice = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const device = await Device.findByIdAndDelete(id);
+    const device = await Device.findByIdAndUpdate(id, {
+        name: undefined,
+        institution: undefined,
+    });
     if (!device) {
         throw new ApiError(404, 'Device not found');
     }

@@ -34,7 +34,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
         form.setValue("longitude", longitude);
         form.setValue("latitude", latitude);
         form.setValue("sensors", sensors);
-        setSelectedSensors(sensors);
+        setSelectedSensors(sensors.map((sensor: any) => sensor.name));
       }
       getDevice();
     }

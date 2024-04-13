@@ -62,7 +62,7 @@ const DeviceCard : React.FC<DeviceCardProps> = ({
                 <AddDevice work="edit" deviceId={id} setDevices={setDevices}/>
               </DropdownMenuItem>
               <DropdownMenuItem className="p-0">
-                <DeleteAlertDialog/>
+                <DeleteAlertDialog deviceId={id} setDevices={setDevices}/>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

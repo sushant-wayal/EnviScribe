@@ -5,6 +5,7 @@ import DeviceCard from "../Components/DeviceCard";
 import Map from "../Components/Map";
 import { domain } from "@/constants";
 import AddDevice from "../Components/AddDevice";
+import Devices from "../../../../data/devices.json";
 
 interface HomePageProps {}
 
