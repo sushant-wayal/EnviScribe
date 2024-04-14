@@ -29,7 +29,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
   useEffect(() => {
     if (deviceId) {
       const getDevice = async () => {
-        const { data : { name, location : { longitude, latitude }, sensors } } = await axios.get(`${domain}/api/v1/devices/${deviceId}`);
+        const { data : { data : { name, location : { longitude, latitude }, sensors } } } = await axios.get(`${domain}/api/v1/devices/${deviceId}`);
         form.setValue("deviceName", name);
         form.setValue("longitude", longitude);
         form.setValue("latitude", latitude);
@@ -53,8 +53,8 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
   const [sensorName, setSensorName] = useState<string>("")
   const [fetchedSensors, setFetchedSensors] = useState<string[]>([]);
   const getSensors = async (query : string) => {
-    const { data } = await axios.get(`${domain}/api/v1/sensors${deviceId ? `/${deviceId}` : ""}?query=${query}`);
-    setFetchedSensors(data);
+    const { data : { data } } = await axios.get(`${domain}/api/v1/sensors${deviceId ? `/${deviceId}` : ""}?query=${query}`);
+    setFetchedSensors([...new Set((data as { name: string }[]).map((sensor) => sensor.name))]);
     search.current?.classList.add("flex");
     search.current?.classList.remove("hidden");
   }
@@ -78,7 +78,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
   },[])
   const onSubmit = async(values: z.infer<typeof AddDeviceFormSchema>) => {
     const { deviceName, longitude, latitude, sensors } = values;
-    const { data } = await axios.post(`${domain}/api/v1/devices`, {
+    const { data : { data }} = await axios.post(`${domain}/api/v1/devices/add`, {
       name: deviceName,
       location: {
         longitude: parseFloat(longitude),

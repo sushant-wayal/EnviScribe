@@ -60,7 +60,7 @@ const ControlForm: React.FC<ControlFormProps> = ({ resetFlag, deviceId, sensorId
   }, [form.getValues().sensorName]);
   useEffect(() => {
     const fetchDevices = async () => {
-      const { data } = await axios.get(`${domain}/devices`);
+      const { data : { data } } = await axios.get(`${domain}/devices`);
       setDevices(data.map((device: any) => {
         device.name,
         device._id
@@ -71,7 +71,7 @@ const ControlForm: React.FC<ControlFormProps> = ({ resetFlag, deviceId, sensorId
   }, []);
   useEffect(() => {
     const fetchSensors = async () => {
-      const { data : { sensors } } = await axios.get(`${domain}/devices/${form.getValues().deviceName}`);
+      const { data : { data : { sensors } } } = await axios.get(`${domain}/devices/${form.getValues().deviceName}`);
       setSensors(sensors.map((sensor: any) => {
         sensor.name,
         sensor._id
@@ -83,7 +83,7 @@ const ControlForm: React.FC<ControlFormProps> = ({ resetFlag, deviceId, sensorId
   }, [form.getValues().deviceName]);
   const intervals = ["Hour", "Day", "Week", "Month", "Year"];
   const fetchLogs = async () => {
-    const { data } = await axios.get(`${domain}/api/v1/logs/${form.getValues().sensorName}?startDate=${form.getValues().startDate}&endDate=${form.getValues().endDate}&interval=${form.getValues().interval}`);
+    const { data : { data } } = await axios.get(`${domain}/api/v1/logs/${form.getValues().sensorName}?startDate=${form.getValues().startDate}&endDate=${form.getValues().endDate}&interval=${form.getValues().interval}`);
     setLogs(data);
     setLabels(data.map((log: Log) => log.timestamp));
   };

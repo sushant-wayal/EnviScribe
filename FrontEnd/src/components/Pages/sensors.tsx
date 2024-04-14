@@ -25,7 +25,7 @@ const SensorsPage : React.FC<SensorsPageProps> = () => {
   const [sensors, setSensors] = useState<Sensor[]>([]);
   useEffect(() => {
     const getSensors = async () => {
-      const { data } = await axios.get(`${domain}/api/v1/sensors/${deviceId}`);
+      const { data : { data } } = await axios.get(`${domain}/api/v1/sensors/${deviceId}`);
       setSensors(data.map((sensor: any) => ({
         ...sensor,
         logs: sensor.logs.map((log: any) => ({

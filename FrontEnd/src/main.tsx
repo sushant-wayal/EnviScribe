@@ -10,8 +10,7 @@ import AboutPage from './components/Pages/about.tsx'
 import PrivacyPage from './components/Pages/privacy.tsx'
 import ContactPage from './components/Pages/contact.tsx'
 import NotFoundPage from './components/Pages/not-found.tsx'
-import InstituteRegisterPage from './components/Pages/institutionRegister.tsx'
-import UserRegisterPage from './components/Pages/userRegister.tsx'
+import LoginPage from './components/Pages/login.tsx'
 
 const router = createBrowserRouter(
   createRoutesFromChildren(
@@ -22,8 +21,7 @@ const router = createBrowserRouter(
       <Route path="about" element={<AboutPage/>} />
       <Route path="privacy" element={<PrivacyPage/>} />
       <Route path="contact" element={<ContactPage/>} />
-      <Route path="institutions/register" element={<InstituteRegisterPage/>} />
-      <Route path='users/register' element={<UserRegisterPage/>} />
+      <Route path="login" element={<LoginPage/>} />
       <Route path="*" element={<NotFoundPage/>} />
     </Route>
   )

@@ -13,7 +13,7 @@ router.route("/")
     .get(isLoggedIn, getAllDevices)
     .post(createDevice);
 
-router.route("/create")
+router.route("/add")
     .post(isLoggedIn, createDevice);
 
 router.route("/:id")

@@ -7,17 +7,29 @@ import { Sensor } from "../models/sensor.model.js";
 
 export const getAllDevices = asyncHandler(async (req, res) => {
     const { id } = req.user;
-    const { devices } = await User.findById(id).select('institution').populate('institution').select('devices').populate('devices').select('_id name location sensors').populate('sensors');
-    const { sensors } = devices;
-    let status = "Normal";
-    for (const sensor of sensors) {
-        const recentAlert = await Sensor.findById(sensor._id).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
-        if (recentAlert.createdAt > Date.now() - 300000) {
-            status = "Alert";
-            break;
+    const { institution : { devices } } = await User.findById(id).select('institution').populate('institution').select('devices');
+    if (devices.length === 0) {
+        return res.status(200).json(new ApiResponse(200, devices));
+    } else {
+        let resDevices = [];
+        for (const device of devices) {
+            const { _id, name, location, sensors } = await Device.findById(device._id).select('name location sensors').populate('sensors');
+            resDevices.push({ _id, name, location, sensors });
         }
+        resDevices = resDevices.map(async (device) => {
+            const { sensors } = device;
+            let status = "Normal";
+            for (const sensor of sensors) {
+                const { alerts } = await Sensor.findById(sensor._id).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
+                if (alerts[0].createdAt > Date.now() - 300000) {
+                    status = "Alert";
+                    break;
+                }
+            }
+            return { ...device, status };
+        })
+        res.status(200).json(new ApiResponse(200, resDevices));
     }
-    res.status(200).json(new ApiResponse(200, {...devices, status}));
 })
 
 export const getDevice = asyncHandler(async (req, res) => {
@@ -43,7 +55,14 @@ export const createDevice = asyncHandler(async (req, res) => {
     if (name) {
         const { id } = req.user;
         const user = await User.findById(id).select('institution');
-        const device = await Device.findOneAndUpdate({ location }, { name, institution: user.institution });
+        const device = await Device.findOne({ 
+            "location.longitude": longitude,
+            "location.latitude": latitude,
+         });
+        device.institution = user.institution;
+        device.name = name;
+        await device.save({ validateBeforeSave: false });
+        console.log("device",device);
         if (device) {
             const sensorsId = device.sensors;
             for (const sensorId of sensorsId) {

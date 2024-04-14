@@ -87,7 +87,7 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem className="p-0">
                 <Button variant="secondary" onClick={async () => {
-                  const { data } = await axios.get(`${domain}/api/v1/logs/${sensor}?startDate=${startDate}&endDate=${endDate}`);
+                  const { data : { data } } = await axios.get(`${domain}/api/v1/logs/${sensor}?startDate=${startDate}&endDate=${endDate}`);
                   DownloadLogs(data);
                 }}>All Data</Button>
                 </DropdownMenuItem>

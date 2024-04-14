@@ -3,7 +3,7 @@ import Navbar from "../Components/Navbar"
 import axios from "axios"
 import DeviceCard from "../Components/DeviceCard";
 import Map from "../Components/Map";
-import { domain, tokenKey } from "@/constants";
+import { defaultLocation, domain, tokenKey } from "@/constants";
 import AddDevice from "../Components/AddDevice";
 
 interface HomePageProps {}
@@ -23,15 +23,19 @@ const HomePage : React.FC<HomePageProps> = () => {
   const [devices, setDevices] = useState<Device[]>([]);
   useEffect(() => {
     const getDevices = async () => {
-      const { data } = await axios.get(`${domain}/api/v1/devices`,{
+      const { data : { data } } = await axios.get(`${domain}/api/v1/devices`,{
         headers: {
-          Authorization: `Bearer ${localStorage.getItem(tokenKey)}`
+          "Authorization": `Bearer ${localStorage.getItem(tokenKey)}`
         }
       });
-      setDevices({
-        ...data,
-        sensors: data.sensors.map((sensor: any) => sensor._id)
-      });
+      const fetcedDevices = data.map((device: any) => ({
+        id: device._id,
+        name: device.name,
+        location: device.location,
+        sensors: device.sensors.map((sensor: any) => sensor._id),
+        status: device.status
+      }));
+      setDevices(fetcedDevices);
     };
     getDevices();
   },[devices]);
@@ -41,6 +45,7 @@ const HomePage : React.FC<HomePageProps> = () => {
         return [devices[i].location.latitude, devices[i].location.longitude];
       }
     }
+    if (devices.length === 0) return defaultLocation
     return [devices[0].location.latitude, devices[0].location.longitude];
   };
   return (
