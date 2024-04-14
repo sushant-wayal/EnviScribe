@@ -59,7 +59,7 @@ export const createDevice = asyncHandler(async (req, res) => {
         }
         res.status(201).json(new ApiResponse(201, device));
     } else {
-        const deviceId = await Device.create({ location });
+        const deviceId = await Device.create({ location : { longitude, latitude }});
         const sensorsId = [];
         for (const sensor of sensors) {
             const { _id } = await Sensor.create({

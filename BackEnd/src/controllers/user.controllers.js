@@ -2,11 +2,15 @@ import { asyncHandler } from '../utils/AsyncHandler.js';
 import { User } from '../models/user.model.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { ApiError } from '../utils/ApiError.js';
+import { Institution } from '../models/institution.model.js';
+import pkg from 'mongoose';
 
 // const cookieOptions = {
 //     httpOnly: true,
 //     secure: true,
 // };
+
+const { $or } = pkg;
 
 const createAccessAndRefreshToken = async (userId) => {
     if (!userId) {
@@ -28,6 +32,7 @@ const createAccessAndRefreshToken = async (userId) => {
 }
 
 const registerUser = asyncHandler(async (req, res) => {
+    console.log("Registering user");
 	const {
 		username,
 		firstName,
@@ -35,16 +40,22 @@ const registerUser = asyncHandler(async (req, res) => {
 		email,
 		profileImage,
 		password,
+        institutionEmail,
 	} = req.body;
-    const inValid = req.body.some(field => field === undefined || field === '' || field === null);
+    const inValid = username === undefined || username === '' || username === null;
     if (inValid) {
         throw new ApiError(400, 'All fields are required');
     }
-    const allReadyExists = await User.findOne($or, [{ username }, { email }]);
-    if (allReadyExists) {
+    const allReadyExistsWithUsername = await User.findOne({ username });
+    const allReadyExistsWithEmail = await User.findOne({ email });
+    if (allReadyExistsWithUsername || allReadyExistsWithEmail) {
         throw new ApiError(400, 'User already exists');
     }
     try {
+        const { _id } = await Institution.findOne({
+            email: institutionEmail,
+        });
+        console.log("Institution ID: ", _id);
         const user = await User.create({
             username,
             firstName,
@@ -52,6 +63,7 @@ const registerUser = asyncHandler(async (req, res) => {
             email,
             profileImage,
             password,
+            institution: _id
         });
         const createdUser = await User.findById(user._id).select('-password -__v -refreshToken');
         const { accessToken, refreshToken } = await createAccessAndRefreshToken(user._id);
@@ -64,20 +76,22 @@ const registerUser = asyncHandler(async (req, res) => {
             refreshToken,
         }, 'User created successfully'));
     } catch (error) {
-        throw new ApiError(500, 'Error creating user');
+        throw new ApiError(500, `Error creating user ${error}`);
     }
 });
 
 const login = asyncHandler(async (req, res) => {
-	const { usernameOrEmail, password } = req.body;
-    const inValid = req.body.some(field => field === undefined || field === '' || field === null);
-    if (inValid) {
-        throw new ApiError(400, 'All fields are required');
-    }
+    const { usernameOrEmail, password } = req.body;
+    console.log("credentials: ", usernameOrEmail, password);
+    // const inValid = req.body.some(field => field === undefined || field === '' || field === null);
+    // if (inValid) {
+    //     throw new ApiError(400, 'All fields are required');
+    // }
     const isEmail = usernameOrEmail.includes('@');
     const username = isEmail ? null : usernameOrEmail;
     const email = isEmail ? usernameOrEmail : null;
-	const user = await User.findOne($or, [{ username }, { email }]);
+    const user = await User.findOne($or, [{ username }, { email }]);
+
     if (!user) {
         return res.status(400).json(new ApiResponse(400, null, 'No such User found'));
     }

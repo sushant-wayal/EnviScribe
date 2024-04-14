@@ -13,6 +13,7 @@ const institutionSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
+        unique: true,
     },
     logo: {
         type: String,

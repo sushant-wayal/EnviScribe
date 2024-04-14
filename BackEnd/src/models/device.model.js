@@ -3,13 +3,12 @@ import mongoose from "mongoose";
 const deviceSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
+        // required: true,
     },
     institution: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Institution",
-        default: null,
-        required: true,
+        // required: true,
     },
     sensors: [{
         type: mongoose.Schema.Types.ObjectId,

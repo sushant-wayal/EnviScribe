@@ -22,6 +22,7 @@ import deviceRoutes from './routes/device.route.js';
 import sensorRoutes from './routes/sensor.route.js';
 import logRoutes from './routes/log.route.js';
 import alertRoutes from './routes/alert.route.js';
+import institutionRoutes from './routes/institution.route.js';
 
 // use routes
 
@@ -31,5 +32,6 @@ app.use('/api/v1/devices', deviceRoutes);
 app.use('/api/v1/sensors', sensorRoutes);
 app.use('/api/v1/logs', logRoutes);
 app.use('/api/v1/alerts', alertRoutes);
+app.use('/api/v1/institutions', institutionRoutes);
 
 export { app };

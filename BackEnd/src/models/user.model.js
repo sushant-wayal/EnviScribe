@@ -50,7 +50,9 @@ userSchema.pre("save", async function (next) {
 })
 
 userSchema.methods.isPasswordValid = async function (password) {
-    return await bcrypt.compare(password, this.password);
+    const _id = this._id;
+    const user = await User.findById(_id).select("+password");
+    return await bcrypt.compare(password, user.password);
 }
 
 userSchema.methods.getAccessToken = function () {
