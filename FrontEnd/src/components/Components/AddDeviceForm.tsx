@@ -31,8 +31,8 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
       const getDevice = async () => {
         const { data : { data : { name, location : { longitude, latitude }, sensors } } } = await axios.get(`${domain}/api/v1/devices/${deviceId}`);
         form.setValue("deviceName", name);
-        form.setValue("longitude", longitude);
-        form.setValue("latitude", latitude);
+        form.setValue("longitude", longitude.toString());
+        form.setValue("latitude", latitude.toString());
         form.setValue("sensors", sensors);
         setSelectedSensors(sensors.map((sensor: any) => sensor.name));
       }
@@ -109,11 +109,12 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Device Name
+                Device Name{deviceId ? "" : " (Can set it only once, its Irreversible)"}
               </FormLabel>
               <FormControl>
                 <Input
                   placeholder="Device Name"
+                  readOnly={deviceId ? true : false}
                   {...field}
                 />
               </FormControl>
@@ -180,13 +181,6 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
                     setSensorName(curr)
                     getSensors(curr);
                   }}
-                  onKeyUp={(e) => {
-                    e.preventDefault()
-                    if (e.key === "Enter") {
-                      addSensor(sensorName)
-                      form.setValue("sensors", selectedSensors)
-                    }
-                  }}
                 />
                 <div className={`absolute top-[100%] w-full max-h-[100px] flex flex-col border-black border-solid rounded bg-white  overflow-x-auto ${fetchedSensors.length != 0 ? "border-2 p-2" : ""}`} ref={search}>
                   {fetchedSensors.map((sensor, index) => (
@@ -194,7 +188,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
                       key={index}
                       onClick={() => {
                         addSensor(sensor);
-                        form.setValue("sensors", selectedSensors)
+                        form.setValue("sensors", [...selectedSensors, sensor])
                         search.current?.classList.add("hidden");
                         search.current?.classList.remove("flex");
                       }}
@@ -229,7 +223,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
                 onClick={() => {
                   setSelectedSensors((prev) => prev.filter((_, i) => i !== index))
                   document.querySelector(`sensor${index}`)?.remove();
-                  form.setValue("sensors", selectedSensors)
+                  form.setValue("sensors", selectedSensors.filter((_, i) => i !== index))
                 }}
                 variant={"destructive"}
               >

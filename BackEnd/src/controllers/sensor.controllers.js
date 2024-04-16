@@ -8,10 +8,11 @@ export const getAllSensors = asyncHandler(async (req, res) => {
     const { deviceId } = req.params;
     const { query } = req.query;
     if (deviceId) {
-        if (query) {
-            const { sensors } = await Device.findById(deviceId).select("sensors").populate({
+        if (query != undefined) {
+            console.log("query",query);
+            let { sensors } = await Device.findById(deviceId).select("sensors").populate({
                 path: "sensors",
-                match: { name: { $regex: query, $options: "i" } }
+                match: { name: { $regex: query, $options: "i" }, display: false }
             });
             sensors = sensors.filter((sensor, index, self) => self.findIndex(s => s.name === sensor.name) === index);
             if (!sensors) {

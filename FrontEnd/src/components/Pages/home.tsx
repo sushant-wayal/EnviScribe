@@ -3,7 +3,7 @@ import Navbar from "../Components/Navbar"
 import axios from "axios"
 import DeviceCard from "../Components/DeviceCard";
 import Map from "../Components/Map";
-import { defaultLocation, domain, tokenKey } from "@/constants";
+import { domain, tokenKey } from "@/constants";
 import AddDevice from "../Components/AddDevice";
 
 interface HomePageProps {}
@@ -38,24 +38,14 @@ const HomePage : React.FC<HomePageProps> = () => {
       setDevices(fetcedDevices);
     };
     getDevices();
-  },[devices]);
-  const calculateCenter = (): number[] => {
-    for (let i = 0; i < devices.length; i++) {
-      if (devices[i].status !== "Normal") {
-        return [devices[i].location.latitude, devices[i].location.longitude];
-      }
-    }
-    if (devices.length === 0) return defaultLocation
-    return [devices[0].location.latitude, devices[0].location.longitude];
-  };
+  },[devices.length]);
   return (
     <>
       <Navbar />
       <div className="relative">
         <AddDevice work="add" setDevices={setDevices}/>
         <Map
-          center={calculateCenter()}
-          zoom={13}
+          zoom={1.5}
           markers={devices.map(device => ({
             position: [device.location.latitude,device.location.longitude],
             popup: device.name,

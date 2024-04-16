@@ -7,10 +7,11 @@ import {
 import { Icon, LatLngTuple, divIcon } from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import "leaflet/dist/leaflet.css";
+import { useEffect, useState } from "react";
+import { defaultLocation } from "@/constants";
 
 interface MapProps {
   className?: string;
-  center: number[];
   zoom: number;
   markers?: {
     position: number[];
@@ -19,7 +20,7 @@ interface MapProps {
   }[];
 }
 
-const Map: React.FC<MapProps> = ({ className, center, zoom, markers }) => {
+const Map: React.FC<MapProps> = ({ className, zoom, markers }) => {
   const customIcon = new Icon({
     iconUrl: "/images/markerIcon.png",
     iconSize: [41, 41],
@@ -41,8 +42,31 @@ const Map: React.FC<MapProps> = ({ className, center, zoom, markers }) => {
       className: "bg-green-600 rounded-full flex justify-center items-center text-white font-bold text-xl pl-[10px] pt-[2.5px]"
     });
   }
+  const [center, setCenter] = useState<number[]>(defaultLocation);
+  const [rerender, setRerender] = useState(false);
+  useEffect(() => {
+    if (markers) {
+      if (markers?.length === 0) {
+        setCenter(defaultLocation)
+        return;
+      } else {
+        for (let i = 0; i < markers.length; i++) {
+          if (markers[i].status !== "Normal") {
+            setCenter([markers[i].position[0], markers[i].position[1]]);
+            return
+          }
+        }
+      }
+    } else {
+      setCenter(defaultLocation)
+      return;
+    }
+    setCenter([markers[0].position[0], markers[0].position[1]]);
+    setRerender(prev => !prev);
+  },[markers?.length]);
   return (
     <MapContainer
+    key={rerender.toString()}
     center={center as LatLngTuple}
     zoom={zoom}
     className={`w-[95vw] h-[50vh] mx-auto mb-5 rounded-3xl rounded-br-none ${className}`} >
@@ -54,7 +78,6 @@ const Map: React.FC<MapProps> = ({ className, center, zoom, markers }) => {
         iconCreateFunction={createCustomClusterIcon}
       >
         {markers && markers.map(({ position, popup, status }) => {
-          console.log("position",position)
           return <Marker key={position.toString()} position={position as LatLngTuple} icon={status == "Normal" ? customIcon : customIconDanger}>
             <Popup>{popup}</Popup>
           </Marker>

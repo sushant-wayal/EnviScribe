@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { Sensor } from "../models/sensor.model.js";
+import { Institution } from "../models/institution.model.js";
 
 export const getAllDevices = asyncHandler(async (req, res) => {
     const { id } = req.user;
@@ -14,20 +15,21 @@ export const getAllDevices = asyncHandler(async (req, res) => {
         let resDevices = [];
         for (const device of devices) {
             const { _id, name, location, sensors } = await Device.findById(device._id).select('name location sensors').populate('sensors');
-            resDevices.push({ _id, name, location, sensors });
+            const visibleSensors = sensors.filter(sensor => sensor.display);
+            resDevices.push({ _id, name, location, sensors : visibleSensors });
         }
-        resDevices = resDevices.map(async (device) => {
+        for (const device of resDevices) {
             const { sensors } = device;
             let status = "Normal";
             for (const sensor of sensors) {
                 const { alerts } = await Sensor.findById(sensor._id).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
-                if (alerts[0].createdAt > Date.now() - 300000) {
+                if (alerts.length  && alerts[0].createdAt > Date.now() - 300000) {
                     status = "Alert";
                     break;
                 }
             }
-            return { ...device, status };
-        })
+            device.status = status;
+        }
         res.status(200).json(new ApiResponse(200, resDevices));
     }
 })
@@ -35,6 +37,7 @@ export const getAllDevices = asyncHandler(async (req, res) => {
 export const getDevice = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const device = await Device.findById(id).select('name location sensors').populate('sensors');
+    device.sensors = device.sensors.filter(sensor => sensor.display);
     if (!device) {
         throw new ApiError(404, 'Device not found');
     }
@@ -62,7 +65,11 @@ export const createDevice = asyncHandler(async (req, res) => {
         device.institution = user.institution;
         device.name = name;
         await device.save({ validateBeforeSave: false });
-        console.log("device",device);
+        const institution = await Institution.findById(user.institution);
+        if (!institution.devices.includes(device._id)) {
+            institution.devices.push(device._id);
+            await institution.save({ validateBeforeSave: false });
+        }
         if (device) {
             const sensorsId = device.sensors;
             for (const sensorId of sensorsId) {
@@ -72,8 +79,10 @@ export const createDevice = asyncHandler(async (req, res) => {
                 }
                 if (sensors.includes(sensor.name)) {
                     sensor.display = true;
-                    await sensor.save({ validateBeforeSave: false });
+                } else {
+                    sensor.display = false;
                 }
+                await sensor.save({ validateBeforeSave: false });
             }
         }
         res.status(201).json(new ApiResponse(201, device));
@@ -93,13 +102,23 @@ export const createDevice = asyncHandler(async (req, res) => {
 })
 
 export const deleteDevice = asyncHandler(async (req, res) => {
+    console.log("delte device");
     const { id } = req.params;
-    const device = await Device.findByIdAndUpdate(id, {
-        name: undefined,
-        institution: undefined,
-    });
+    const device = await Device.findById(id).select('institution sensors');
     if (!device) {
         throw new ApiError(404, 'Device not found');
+    }
+    const institution = await Institution.findById(device.institution);
+    institution.devices = institution.devices.filter(deviceId => deviceId.toString() !== id.toString());
+    await institution.save({ validateBeforeSave: false });
+    await Device.findByIdAndUpdate(id, {
+        institution: null,
+        name: null,
+    });
+    for (const sensorId of device.sensors) {
+        await Sensor.findByIdAndUpdate(sensorId, {
+            display: false,
+        });
     }
     res.status(200).json(new ApiResponse(200, device));
 })
