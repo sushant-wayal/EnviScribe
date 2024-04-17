@@ -45,7 +45,7 @@ const SensorCard : React.FC<SensorCardProps> = ({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <LineChart
+          {data.length > 0 ? <LineChart
             width={300}
             height={300}
             series={[
@@ -53,7 +53,7 @@ const SensorCard : React.FC<SensorCardProps> = ({
             ]}
             xAxis={[{ scaleType: 'point', data: labels }]}
             className="bg-red-600"
-          />
+          /> : <p className="text-5xl">No data available</p>}
         </CardContent>
         <CardFooter className="flex items-center gap-10 border-t-2 border-black border-solid">
           <CardDescription className="flex justify-start gap-3">
