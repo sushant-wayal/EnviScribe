@@ -5,6 +5,7 @@ import DeviceCard from "../Components/DeviceCard";
 import Map from "../Components/Map";
 import { domain, tokenKey } from "@/constants";
 import AddDevice from "../Components/AddDevice";
+import Loader from "../Components/Loader";
 
 interface HomePageProps {}
 
@@ -21,6 +22,7 @@ export type Device = {
 
 const HomePage : React.FC<HomePageProps> = () => {
   const [devices, setDevices] = useState<Device[]>([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const getDevices = async () => {
       const { data : { data } } = await axios.get(`${domain}/api/v1/devices`,{
@@ -36,11 +38,12 @@ const HomePage : React.FC<HomePageProps> = () => {
         status: device.status
       }));
       setDevices(fetcedDevices);
+      setLoading(false);
     };
     getDevices();
   },[devices.length]);
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Navbar />
       <div className="relative">
         <AddDevice work="add" setDevices={setDevices}/>
@@ -53,13 +56,14 @@ const HomePage : React.FC<HomePageProps> = () => {
           }))}
         />
       </div>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 relative flex-grow">
         {devices.map(device => {
           const { id, name, location, sensors, status } = device;
           return <DeviceCard key={id} id={id} name={name} status={status} location={location} sensors={sensors.length} setDevices={setDevices}/>;
         })}
+        <Loader size={30} loading={loading} />
       </div>
-    </>
+    </div>
   )
 }
 

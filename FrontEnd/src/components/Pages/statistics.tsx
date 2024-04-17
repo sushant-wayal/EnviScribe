@@ -25,6 +25,7 @@ import {
 import DatePicker from "../ui/date-picker";
 import { Label } from "../ui/label";
 import { toast } from "sonner";
+import Loader from "../Components/Loader";
 
 export type Log = {
   value: string;
@@ -51,6 +52,7 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
     name: string;
     id: string;
   }[]>([]);
+
   useEffect(() => {
     const fetchDevices = async () => {
       const { data : { data } } = await axios.get(`${domain}/api/v1/devices`, {
@@ -153,16 +155,20 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
   return (
     <>
       <Navbar />
-      <div className="flex justify-between w-lvw">
-        { chartLabels.length == logs.length ? 
-        <LineChart
-          width={800}
-          height={500}
-          series={[
-            {data : logs.map(log => parseFloat(log.value)), label: sensors.filter(sensorId => sensorId.id === sensor)[0]?.name || "No Data" },
-          ]}
-          xAxis={[{ scaleType: 'point', data: chartLabels}]}
-        /> : null}
+      <div className="flex justify-between w-lvw min-h-[72vh]">
+        <div className="flex-grow relative">
+          { chartLabels.length == logs.length ? 
+          <LineChart
+            width={800}
+            height={500}
+            series={[
+              {data : logs.map(log => parseFloat(log.value)), label: sensors.filter(sensorId => sensorId.id === sensor)[0]?.name || "No Data" },
+            ]}
+            xAxis={[{ scaleType: 'point', data: chartLabels}]}
+          /> : <div className="animate-spin w-full h-full">
+            <Loader size={50} loading={true} />
+            </div>}
+        </div>
         <Card className="w-auto mr-10 relative">
           <CardHeader>
             <CardTitle>Controls</CardTitle>
