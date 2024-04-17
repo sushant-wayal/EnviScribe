@@ -15,6 +15,7 @@ import { Device } from "../Pages/home";
 import axios from "axios";
 import { domain } from "@/constants";
 import { Dispatch, SetStateAction } from "react";
+import { toast } from "sonner";
 
 interface DeleteAlertDialogProps {
   deviceId: string;
@@ -47,8 +48,14 @@ const DeleteAlertDialog : React.FC<DeleteAlertDialogProps> = ({ deviceId, setDev
           <AlertDialogAction
             className={buttonVariants({ variant: "destructive" })}
             onClick={async () => {
-              await axios.delete(`${domain}/api/v1/devices/${deviceId}`);
-              setDevices((prevDevices : Device[]) => prevDevices.filter((device) => device.id !== deviceId));
+              const toastId = toast.loading("Deleting device...");
+              try {
+                await axios.delete(`${domain}/api/v1/devices/${deviceId}`);
+                setDevices((prevDevices : Device[]) => prevDevices.filter((device) => device.id !== deviceId));
+                toast.success("Device deleted successfully", {id: toastId});
+              } catch (error : any) {
+                toast.error(`Error Deleting Device : ${error.response.data.error}`, {id: toastId});
+              }
             }}
           >
             Continue

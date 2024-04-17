@@ -18,6 +18,7 @@ import { AlertDialogAction, AlertDialogCancel, AlertDialogFooter } from "../ui/a
 import axios from "axios";
 import { domain, tokenKey } from "@/constants";
 import { Device } from "../Pages/home";
+import { toast } from "sonner";
 
 interface AddDeviceFormProps {
   setDevices: Dispatch<SetStateAction<Device[]>>;
@@ -77,23 +78,30 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
     })
   },[])
   const onSubmit = async(values: z.infer<typeof AddDeviceFormSchema>) => {
-    const { deviceName, longitude, latitude, sensors } = values;
-    const { data : { data }} = await axios.post(`${domain}/api/v1/devices/add`, {
-      name: deviceName,
-      location: {
-        longitude: parseFloat(longitude),
-        latitude: parseFloat(latitude)
-      },
-      sensors
-    }, {
-      headers: {
-        "Authorization": `Bearer ${localStorage.getItem(tokenKey)}`
+    const toastId = toast.loading(deviceId ? "Saving Changes..." : "Adding New Device...")
+    try {
+      const { deviceName, longitude, latitude, sensors } = values;
+      const { data : { data }} = await axios.post(`${domain}/api/v1/devices/add`, {
+        name: deviceName,
+        location: {
+          longitude: parseFloat(longitude),
+          latitude: parseFloat(latitude)
+        },
+        sensors
+      }, {
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem(tokenKey)}`
+        }
+      });
+      if (data) {
+        form.reset();
+        setSelectedSensors([]);
+        !deviceId ? setDevices(prev => [...prev, data]) : setDevices(prev => prev.map(device => device.id == deviceId ? data : device));
       }
-    });
-    if (data) {
-      form.reset();
-      setSelectedSensors([]);
-      !deviceId ? setDevices(prev => [...prev, data]) : setDevices(prev => prev.map(device => device.id == deviceId ? data : device));
+      toast.success(`${deviceId ? "Changes Saved" : "Device Added"} Successfully`, { id: toastId })
+    } catch (error : any) {
+      console.log(error);
+      toast.error(`Error ${deviceId ? "Saving Changes" : "Adding Device"} : ${error.response.data.error || "Try Again"}`, { id: toastId })
     }
   }
   return (
@@ -244,7 +252,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
                   Please Wait
                 </>
               ): (
-                "Add"
+                deviceId ? "Save" : "Add"
               )}
             </Button>
             <AlertDialogAction
