@@ -155,8 +155,8 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
   return (
     <>
       <Navbar />
-      <div className="flex justify-between w-lvw min-h-[72vh]">
-        <div className="flex-grow relative">
+      <div className="flex justify-between w-lvw min-h-[78vh]">
+        <div className="flex-grow relative bg-[#687a6a] mx-5 rounded-xl">
           { chartLabels.length == logs.length ? 
           <LineChart
             width={800}
@@ -165,14 +165,15 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
               {data : logs.map(log => parseFloat(log.value)), label: sensors.filter(sensorId => sensorId.id === sensor)[0]?.name || "No Data" },
             ]}
             xAxis={[{ scaleType: 'point', data: chartLabels}]}
+            colors={['#00FF00']}
           /> : <div className="animate-spin w-full h-full">
             <Loader size={50} loading={true} />
             </div>}
         </div>
-        <Card className="w-auto mr-10 relative">
+        <Card className="w-auto mr-10 relative bg-[#4f6752] text-white border-0">
           <CardHeader>
             <CardTitle>Controls</CardTitle>
-            <CardDescription>Change Controls to see Statistical Changes</CardDescription>
+            <CardDescription className="text-[#DDDDDD]">Change Controls to see Statistical Changes</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-start justify-start gap-8">
             <div className="flex flex-col items-start justify-start gap-12">
@@ -183,7 +184,7 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
                   <Select onValueChange={(e) => {
                     setDevice(devices.filter(device => device.id === e)[0]?.id)
                   }} defaultValue={devices[0]?.name} value={device}>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-[180px] bg-white text-[#444444]">
                       <SelectValue placeholder="Select Device" />
                     </SelectTrigger>
                     <SelectContent>
@@ -202,7 +203,7 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
                     <Select onValueChange={(e) => {
                     setSensor(sensors.filter(sensor => sensor.id === e)[0]?.id)
                   }} value={sensor}>
-                      <SelectTrigger className="w-[180px]">
+                      <SelectTrigger className="w-[180px] bg-white text-[#444444]">
                         <SelectValue placeholder="Select Sensor" />
                       </SelectTrigger>
                       <SelectContent>
@@ -220,7 +221,7 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
                     <Select onValueChange={(e) => {
                       setInterval(e);
                     }} value={interval}>
-                      <SelectTrigger className="w-[180px]">
+                      <SelectTrigger className="w-[180px] bg-white text-[#444444]">
                         <SelectValue placeholder="Select Interval" />
                       </SelectTrigger>
                       <SelectContent>
@@ -252,10 +253,10 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
               setStartDate(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
               setEndDate(new Date());
               setInterval("Hour");
-            }} variant="outline">Reset</Button>
+            }} variant="outline" className="text-[#444444]">Reset</Button>
             <DropdownMenu>
               <DropdownMenuTrigger>
-                <Button>Download Excel</Button>
+                <Button className="bg-green-600">Download Excel</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="z-[1002]">
                 <DropdownMenuItem className="p-0 mb-2">

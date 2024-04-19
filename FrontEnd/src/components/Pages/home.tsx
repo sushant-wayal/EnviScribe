@@ -48,7 +48,7 @@ const HomePage : React.FC<HomePageProps> = () => {
       <div className="relative">
         <AddDevice work="add" setDevices={setDevices}/>
         <Map
-          zoom={1.5}
+          zoom={13}
           markers={devices.map(device => ({
             position: [device.location.latitude,device.location.longitude],
             popup: device.name,

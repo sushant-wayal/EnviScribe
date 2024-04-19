@@ -21,7 +21,8 @@ const DatePicker: React.FC<DatePickerProps> = ({ date, setDate, maxDate, minDate
           variant={"outline"}
           className={cn(
             "w-[240px] pl-3 text-left font-normal",
-            !date && "text-muted-foreground"
+            !date && "text-muted-foreground",
+            "text-[#444444]"
           )}
         >
           {date ? (
