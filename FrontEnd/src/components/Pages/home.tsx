@@ -56,7 +56,7 @@ const HomePage : React.FC<HomePageProps> = () => {
           }))}
         />
       </div>
-      <div className="flex flex-col gap-3 relative flex-grow">
+      <div className="flex flex-col items-center gap-3 relative flex-grow">
         {devices.map(device => {
           const { id, name, location, sensors, status } = device;
           return <DeviceCard key={id} id={id} name={name} status={status} location={location} sensors={sensors.length} setDevices={setDevices}/>;

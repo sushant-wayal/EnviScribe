@@ -36,7 +36,7 @@ const AddDevice : React.FC<AddDeviceProps> = ({ work, setDevices, deviceId }) =>
           }
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="z-[1002]" onClick={(e) => e.stopPropagation()}>
+      <AlertDialogContent className="z-[1002] bg-[#444444] text-white border-0" onClick={(e) => e.stopPropagation()}>
         <AlertDialogHeader>
           <AlertDialogTitle>
             Add New Device

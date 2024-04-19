@@ -124,6 +124,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
                   placeholder="Device Name"
                   readOnly={deviceId ? true : false}
                   {...field}
+                  className="bg-white placeholder:text-[#444444]"
                 />
               </FormControl>
               <FormMessage/>
@@ -145,6 +146,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
                     type="number"
                     placeholder="Longitude"
                     {...field}
+                    className="bg-white placeholder:text-[#444444]"
                   />
                 </FormControl>
                 <FormMessage/>
@@ -165,6 +167,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
                     type="number"
                     placeholder="Latitude"
                     {...field}
+                    className="bg-white placeholder:text-[#444444]"
                   />
                 </FormControl>
                 <FormMessage/>
@@ -189,6 +192,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
                     setSensorName(curr)
                     getSensors(curr);
                   }}
+                  className="bg-white placeholder:text-[#444444]"
                 />
                 <div className={`absolute top-[100%] w-full max-h-[100px] flex flex-col border-black border-solid rounded bg-white  overflow-x-auto ${fetchedSensors.length != 0 ? "border-2 p-2" : ""}`} ref={search}>
                   {fetchedSensors.map((sensor, index) => (
@@ -241,11 +245,11 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
           ))}
         </div>
         <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="text-[#444444]">Cancel</AlertDialogCancel>
             <Button
               type="submit"
               disabled={form.formState.isSubmitting}
-              className="disabled:cursor-not-allowed"
+              className="disabled:cursor-not-allowed bg-green-600"
             >
               {form.formState.isSubmitting ? (
                 <>
