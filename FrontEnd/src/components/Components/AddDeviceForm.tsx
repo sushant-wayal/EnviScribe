@@ -146,7 +146,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
                     type="number"
                     placeholder="Longitude"
                     {...field}
-                    className="bg-white placeholder:text-[#444444]"
+                    className="bg-white placeholder:text-[#444444] text-[#222222]"
                   />
                 </FormControl>
                 <FormMessage/>
@@ -167,7 +167,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
                     type="number"
                     placeholder="Latitude"
                     {...field}
-                    className="bg-white placeholder:text-[#444444]"
+                    className="bg-white placeholder:text-[#444444] text-[#222222]"
                   />
                 </FormControl>
                 <FormMessage/>
@@ -192,9 +192,9 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
                     setSensorName(curr)
                     getSensors(curr);
                   }}
-                  className="bg-white placeholder:text-[#444444]"
+                  className="bg-white placeholder:text-[#444444] text-[#222222]"
                 />
-                <div className={`absolute top-[100%] w-full max-h-[100px] flex flex-col border-black border-solid rounded bg-white  overflow-x-auto ${fetchedSensors.length != 0 ? "border-2 p-2" : ""}`} ref={search}>
+                <div className={`absolute top-[100%] w-full max-h-[100px] flex flex-col border-black border-solid rounded bg-white  overflow-x-auto text-[#222222] ${fetchedSensors.length != 0 ? "border-2 p-2" : ""}`} ref={search}>
                   {fetchedSensors.map((sensor, index) => (
                     <p
                       key={index}

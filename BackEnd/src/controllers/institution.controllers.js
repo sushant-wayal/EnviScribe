@@ -4,11 +4,13 @@ import { asyncHandler } from "../utils/AsyncHandler.js";
 export const registerInstitution = asyncHandler(async (req, res) => {
 	const {
 		name,
-    email
+    email,
+    key
 	} = req.body;
   const institution = await Institution.create({
     name,
-    email
+    email,
+    key
   });
   res.status(201).json(institution);
 });

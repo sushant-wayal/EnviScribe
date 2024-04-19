@@ -20,3 +20,42 @@ export const AddDeviceFormSchema = z.object({
     }),
   )
 })
+
+export const LoginFormSchema = z.object({
+  email: z.string().min(1,{
+    message: "Email is Required"
+  }).email({
+    message: "Invalid Email"
+  }),
+  password: z.string().min(1, {
+    message: "Password is Required"
+  }),
+})
+
+export const SignUpFormSchema = z.object({
+  email: z.string().min(1,{
+    message: "Email is Required"
+  }).email({
+    message: "Invalid Email"
+  }),
+  password: z.string().min(1, {
+    message: "Password is Required"
+  }),
+  institutionKey: z.string().min(1, {
+    message: "Institution Key is Required"
+  })
+})
+
+export const InstituteRegistrationFormSchema = z.object({
+  name: z.string().min(1, {
+    message: "Institution Name is required"
+  }),
+  email: z.string().min(1, {
+    message: "Email is Required"
+  }).email({
+    message: "Invalid Email"
+  }),
+  key: z.string().min(1, {
+    message: "Institution Key is Required"
+  })
+})

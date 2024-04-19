@@ -15,18 +15,23 @@ const institutionSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
-    logo: {
-        type: String,
-        default: "",
-    },
-    admins: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-    }],
+    // logo: {
+    //     type: String,
+    //     default: "",
+    // },
+    // admins: [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "User",
+    // }],
     users: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
     }],
+    key: {
+        type: String,
+        required: true,
+        unique: true,
+    }
 }, { timestamps: true });
 
 export const Institution = mongoose.model("Institution", institutionSchema);
