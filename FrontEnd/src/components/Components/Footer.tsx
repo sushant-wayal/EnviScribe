@@ -8,9 +8,9 @@ const Footer : React.FC<FooterProps> = () => {
       <div className='rounded-full w-[calc(100vw-16px)] py-2 px-4 flex justify-between items-center z-[1001] bg-green-600 text-white'>
         <p>&copy; DP Group 43 | 2024</p>
         <div className='flex gap-20 items-center'>
-          <Link to="/privacy">Privacy</Link>
-          <Link to="/contact">Contact Us</Link>
-          <Link to="/about">About Us</Link>
+          <Link className='hover:underline' to="/privacy">Privacy</Link>
+          <Link className='hover:underline' to="/contact">Contact Us</Link>
+          <Link className='hover:underline' to="/about">About Us</Link>
         </div>
       </div>
     </div>

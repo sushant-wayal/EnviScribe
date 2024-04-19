@@ -41,7 +41,7 @@ const DeviceCard : React.FC<DeviceCardProps> = ({
   setDevices
 }) => {
   return (
-    <Link className="mx-10 w-[1300px]" to={`/device/${id}`}>
+    <Link className="mx-10 w-[1300px] hover:opacity-80" to={`/device/${id}`}>
       <Card className={`flex justify-between items-center mx-5 ${status == "Normal" ? "bg-green-600" : status == "Warning" ? "bg-yellow-600" : "bg-red-600"} border-0`}>
         <CardHeader className="flex flex-row gap-3 items-center justify-center">
           <CardTitle>{name}</CardTitle>
