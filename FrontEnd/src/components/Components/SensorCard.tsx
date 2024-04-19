@@ -36,10 +36,10 @@ const SensorCard : React.FC<SensorCardProps> = ({
   const labels = logs.map(log => log.timestamp);
   return (
     <Link className="w-auto max-h-[500px] mx-auto my-5" to={`/statistics/${deviceId}/${id}`}>
-      <Card className="px-3">
+      <Card className="px-3 bg-[#687a6a] text-white border-0">
         <CardHeader className="border-b-2 border-black border-solid">
           <CardTitle>{name}</CardTitle>
-          <CardDescription className="flex justify-between">
+          <CardDescription className="flex justify-between text-[#DDDDDD]">
             <p>Min Value: {minValue.toString()}</p>
             <p>Max Value: {maxValue.toString()}</p>
           </CardDescription>
@@ -52,11 +52,12 @@ const SensorCard : React.FC<SensorCardProps> = ({
               {data, label: name.split(' ')[0]},
             ]}
             xAxis={[{ scaleType: 'point', data: labels }]}
-            className="bg-red-600"
+            className="text-white"
+            colors={['#00FF00']}
           /> : <p className="text-5xl">No data available</p>}
         </CardContent>
         <CardFooter className="flex items-center gap-10 border-t-2 border-black border-solid">
-          <CardDescription className="flex justify-start gap-3">
+          <CardDescription className="flex justify-start gap-3 text-[#DDDDDD]">
             <p>Status : </p>
             <p className="font-semibold">{status}</p>
           </CardDescription>
