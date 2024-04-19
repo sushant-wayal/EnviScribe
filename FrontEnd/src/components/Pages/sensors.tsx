@@ -14,6 +14,7 @@ type Sensor = {
   minValue: number;
   maxValue: number;
   status: string;
+  logStatus: string;
   logs: {
     value: Number;
     timestamp: String;
@@ -28,14 +29,17 @@ const SensorsPage : React.FC<SensorsPageProps> = () => {
   useEffect(() => {
     const getSensors = async () => {
       const { data : { data } } = await axios.get(`${domain}/api/v1/sensors/${deviceId}`);
-      setSensors(data.map((sensor: any) => ({
-        ...sensor,
-        id: sensor._id,
-        logs: sensor.logs.slice(sensor.logs.length-5, sensor.logs.length).map((log: any) => ({
+      setSensors(data.map((sensor: any) => {
+        const { _doc, logStatus } = sensor;
+        return{
+        ..._doc,
+        id: _doc._id,
+        logs: _doc.logs.slice(_doc.logs.length-5, _doc.logs.length).map((log: any) => ({
             ...log,
             timestamp: log.createdAt.toString().split('T')[1].substring(0,5),
-          }))
-      })));
+          })),
+        logStatus
+      }}));
       setLoading(false);
     };
     getSensors();
@@ -45,8 +49,8 @@ const SensorsPage : React.FC<SensorsPageProps> = () => {
       <Navbar />
       <div className="grid grid-cols-4 min-h-screen">
         {sensors.map((sensor, index) => {
-          const { id, name, status, minValue, maxValue, logs } = sensor;
-          return <SensorCard key={index} deviceId={deviceId || ""} id={id} name={name} status={status} minValue={minValue} maxValue={maxValue} logs={logs} />
+          const { id, name, status, minValue, maxValue, logs, logStatus } = sensor;
+          return <SensorCard key={index} deviceId={deviceId || ""} id={id} name={name} status={status} minValue={minValue} maxValue={maxValue} logs={logs} logStatus={logStatus}/>
         })}
         <Loader size={40} loading={loading} />
       </div>

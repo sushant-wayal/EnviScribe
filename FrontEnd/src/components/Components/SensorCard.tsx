@@ -16,6 +16,7 @@ interface SensorCardProps {
   status: string;
   minValue: Number;
   maxValue: Number;
+  logStatus: string;
   logs: {
     value: Number;
     timestamp: String;
@@ -30,13 +31,14 @@ const SensorCard : React.FC<SensorCardProps> = ({
   status,
   minValue,
   maxValue,
-  logs
+  logs,
+  logStatus
 }) => {
   const data = logs.map(log => parseFloat(log.value.toString()));
   const labels = logs.map(log => log.timestamp);
   return (
     <Link className="w-auto max-h-[500px] mx-auto my-5" to={`/statistics/${deviceId}/${id}`}>
-      <Card className="px-3 bg-[#687a6a] text-white border-0">
+      <Card className={`px-3 ${logStatus == "Normal" ? "bg-[#687a6a]" : logStatus == "Warning" ? "bg-[#7a7868]" : "bg-[#7a6868]"} text-white border-0`}>
         <CardHeader className="border-b-2 border-black border-solid">
           <CardTitle>{name}</CardTitle>
           <CardDescription className="flex justify-between text-[#DDDDDD]">

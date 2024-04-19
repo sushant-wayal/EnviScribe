@@ -18,7 +18,15 @@ export const getAllSensors = asyncHandler(async (req, res) => {
             if (!sensors) {
                 throw new ApiError(404, 'Device not found');
             }
-            return res.status(200).json(new ApiResponse(200, sensors));
+            const resSensorsWithLogStatus = []
+            for (const sensor of sensors) {
+                const { alerts } = await Sensor.findById(sensor._id).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
+                if (alerts.length  && alerts[0].createdAt > Date.now() - 300000) {
+                    resSensorsWithLogStatus.push({ ...sensor, logStatus: "Alert", display: sensor.display});
+                }
+                resSensorsWithLogStatus.push({ ...sensor, logStatus: "Normal", display: sensor.display});
+            }
+            return res.status(200).json(new ApiResponse(200, resSensorsWithLogStatus.filter(sensor => sensor.display === true)));
         } else {
             const { sensors } = await Device.findById(deviceId).select("sensors");
             const resSensors = []
@@ -26,15 +34,40 @@ export const getAllSensors = asyncHandler(async (req, res) => {
                 const sensor = await Sensor.findById(sensorId).select("-device -unit -alerts -createdAt -updatedAt -__v").populate("logs");
                 resSensors.push(sensor);
             }
-            return res.status(200).json(new ApiResponse(200, resSensors.filter(sensor => sensor.display === true)));
+            const resSensorsWithLogStatus = []
+            for (const sensor of resSensors) {
+                const { alerts } = await Sensor.findById(sensor._id).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
+                if (alerts.length  && alerts[0].createdAt > Date.now() - 300000) {
+                    resSensorsWithLogStatus.push({ ...sensor, logStatus: "Alert", display: sensor.display});
+                }
+                resSensorsWithLogStatus.push({ ...sensor, logStatus: "Normal", display: sensor.display});
+            }
+            console.log("sensors",resSensorsWithLogStatus);
+            return res.status(200).json(new ApiResponse(200, resSensorsWithLogStatus.filter(sensor => sensor.display === true)));
         }
     } else {
         if (query) {
             const sensors = await Sensor.find({ name: { $regex: query, $options: "i" } });
-            return res.status(200).json(new ApiResponse(200, sensors));
+            const resSensorsWithLogStatus = []
+            for (const sensor of sensors) {
+                const { alerts } = await Sensor.findById(sensor._id).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
+                if (alerts.length  && alerts[0].createdAt > Date.now() - 300000) {
+                    resSensorsWithLogStatus.push({ ...sensor, logStatus: "Alert", display: sensor.display});
+                }
+                resSensorsWithLogStatus.push({ ...sensor, logStatus: "Normal", display: sensor.display});
+            }
+            return res.status(200).json(new ApiResponse(200, resSensorsWithLogStatus.filter(sensor => sensor.display === true)));
         } else {
             const sensors = await Sensor.find();
-            return res.status(200).json(new ApiResponse(200, sensors));
+            const resSensorsWithLogStatus = []
+            for (const sensor of sensors) {
+                const { alerts } = await Sensor.findById(sensor._id).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
+                if (alerts.length  && alerts[0].createdAt > Date.now() - 300000) {
+                    resSensorsWithLogStatus.push({ ...sensor, logStatus: "Alert", display: sensor.display});
+                }
+                resSensorsWithLogStatus.push({ ...sensor, logStatus: "Normal", display: sensor.display});
+            }
+            return res.status(200).json(new ApiResponse(200, resSensorsWithLogStatus.filter(sensor => sensor.display === true)));
         }
     }
 });
