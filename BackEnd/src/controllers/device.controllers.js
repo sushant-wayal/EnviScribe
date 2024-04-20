@@ -8,29 +8,40 @@ import { Institution } from "../models/institution.model.js";
 
 export const getAllDevices = asyncHandler(async (req, res) => {
     const { id } = req.user;
-    const { institution : { devices } } = await User.findById(id).select('institution').populate('institution').select('devices');
+    const { institution } = await User.findById(id).select('institution').populate('institution').select('devices');
+    const devices = institution.devices;
+    const { query } = req.query;
     if (devices.length === 0) {
         return res.status(200).json(new ApiResponse(200, devices));
     } else {
-        let resDevices = [];
-        for (const device of devices) {
-            const { _id, name, location, sensors } = await Device.findById(device._id).select('name location sensors').populate('sensors');
-            const visibleSensors = sensors.filter(sensor => sensor.display);
-            resDevices.push({ _id, name, location, sensors : visibleSensors });
-        }
-        for (const device of resDevices) {
-            const { sensors } = device;
-            let status = "Normal";
-            for (const sensor of sensors) {
-                const { alerts } = await Sensor.findById(sensor._id).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
-                if (alerts.length  && alerts[0].createdAt > Date.now() - 300000) {
-                    status = "Alert";
-                    break;
-                }
+        if (query) {
+            console.log("query",query);
+            const resDevices = await Device.find({
+                name: { $regex: query, $options: 'i' },
+                institution: institution._id,
+            }).select('name location sensors _id');
+            res.status(200).json(new ApiResponse(200, resDevices));
+        } else {
+            let resDevices = [];
+            for (const device of devices) {
+                const { _id, name, location, sensors } = await Device.findById(device._id).select('name location sensors').populate('sensors');
+                const visibleSensors = sensors.filter(sensor => sensor.display);
+                resDevices.push({ _id, name, location, sensors : visibleSensors });
             }
-            device.status = status;
+            for (const device of resDevices) {
+                const { sensors } = device;
+                let status = "Normal";
+                for (const sensor of sensors) {
+                    const { alerts } = await Sensor.findById(sensor._id).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
+                    if (alerts.length  && alerts[0].createdAt > Date.now() - 300000) {
+                        status = "Alert";
+                        break;
+                    }
+                }
+                device.status = status;
+            }
+            res.status(200).json(new ApiResponse(200, resDevices));
         }
-        res.status(200).json(new ApiResponse(200, resDevices));
     }
 })
 

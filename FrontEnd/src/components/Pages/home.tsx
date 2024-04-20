@@ -25,7 +25,7 @@ const HomePage : React.FC<HomePageProps> = () => {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const getDevices = async () => {
-      const { data : { data } } = await axios.get(`${domain}/api/v1/devices`,{
+      const { data : { data } } = await axios.get(`${domain}/api/v1/devices/`,{
         headers: {
           "Authorization": `Bearer ${localStorage.getItem(tokenKey)}`
         }
