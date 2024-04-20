@@ -52,7 +52,7 @@ const InstitutionregistrationPage = () => {
   return (
     <>
     <AuthNavbar/>
-    <div className="min-h-[80vh] w-lvw flex justify-between items-center px-20">
+    <div className="min-h-[90vh] w-lvw flex justify-between items-center px-20">
       <img src="../../../login.svg" alt="login" className="w-1/3 hidden lg:inline" />
       <Card className="h-auto w-[400px] mx-auto scale-110 bg-[#687a6a] border-0 relative">
         <CardHeader className="pb-0">

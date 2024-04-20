@@ -51,8 +51,8 @@ const LoginPage = () => {
   return (
     <>
     <AuthNavbar/>
-    <div className="min-h-[74.1vh] w-lvw flex justify-between items-center px-20">
-      <img src="../../../login.svg" alt="login" className="w-1/3" />
+    <div className="min-h-[90vh] w-lvw flex justify-between items-center px-20">
+      <img src="../../../login.svg" alt="login" className="w-1/3 hidden lg:inline" />
       <Card className="h-auto w-[300px] mx-auto scale-110 bg-[#687a6a] border-0">
         <CardHeader>
           <CardTitle className="text-center text-4xl">Log In</CardTitle>
