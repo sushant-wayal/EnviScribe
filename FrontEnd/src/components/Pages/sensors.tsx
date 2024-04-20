@@ -28,6 +28,8 @@ const SensorsPage : React.FC<SensorsPageProps> = () => {
   const [sensors, setSensors] = useState<Sensor[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
+    const token = localStorage.getItem(tokenKey);
+    if(!token) navigate("/login");
     const getSensors = async () => {
       try {
         const { data : { data } } = await axios.get(`${domain}/api/v1/sensors/${deviceId}?sensors=true`,{

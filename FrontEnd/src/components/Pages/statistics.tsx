@@ -55,6 +55,8 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
   }[]>([]);
 
   useEffect(() => {
+    const token = localStorage.getItem(tokenKey);
+    if(!token) navigate("/login");
     const fetchDevices = async () => {
       const { data : { data } } = await axios.get(`${domain}/api/v1/devices`, {
         headers: {

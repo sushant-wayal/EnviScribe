@@ -6,6 +6,7 @@ import Map from "../Components/Map";
 import { domain, tokenKey } from "@/constants";
 import AddDevice from "../Components/AddDevice";
 import Loader from "../Components/Loader";
+import { useNavigate } from "react-router-dom";
 
 interface HomePageProps {}
 
@@ -21,9 +22,12 @@ export type Device = {
 }
 
 const HomePage : React.FC<HomePageProps> = () => {
+  const navigate = useNavigate();
   const [devices, setDevices] = useState<Device[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
+    const token = localStorage.getItem(tokenKey);
+    if(!token) navigate("/login");
     const getDevices = async () => {
       const { data : { data } } = await axios.get(`${domain}/api/v1/devices/`,{
         headers: {
