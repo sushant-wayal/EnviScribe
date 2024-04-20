@@ -54,8 +54,9 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
   const [sensorName, setSensorName] = useState<string>("")
   const [fetchedSensors, setFetchedSensors] = useState<string[]>([]);
   const getSensors = async (query : string) => {
+    console.log("query",query);
     const { data : { data } } = await axios.get(`${domain}/api/v1/sensors${deviceId ? `/${deviceId}` : ""}?query=${query}`);
-    setFetchedSensors([...new Set((data as { name: string }[]).map((sensor) => sensor.name))]);
+    setFetchedSensors([...new Set((data as { _doc: { name: string } }[]).map((sensor) => sensor._doc.name))]);
     search.current?.classList.add("flex");
     search.current?.classList.remove("hidden");
   }
@@ -69,14 +70,6 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
       alertDialogAction.current?.click()
     }
   }, [form.formState.submitCount])
-  useEffect(() => {
-    document.addEventListener("click", (e) => {
-      if (e.target != search.current) {
-        search.current?.classList.add("hidden");
-        search.current?.classList.remove("flex");
-      }
-    })
-  },[])
   const onSubmit = async(values: z.infer<typeof AddDeviceFormSchema>) => {
     const toastId = toast.loading(deviceId ? "Saving Changes..." : "Adding New Device...")
     try {
@@ -124,7 +117,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
                   placeholder="Device Name"
                   readOnly={deviceId ? true : false}
                   {...field}
-                  className="bg-white placeholder:text-[#444444]"
+                  className="bg-white placeholder:text-[#444444] text-[#222222]"
                 />
               </FormControl>
               <FormMessage/>
@@ -204,6 +197,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
                         search.current?.classList.add("hidden");
                         search.current?.classList.remove("flex");
                       }}
+                      className="hover:bg-green-400/50 p-1"
                     >
                       {sensor}
                     </p>
@@ -214,6 +208,8 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
                 type="button"
                 onClick={() => {
                   setSensorName("");
+                  search.current?.classList.add("hidden");
+                  search.current?.classList.remove("flex");
                 }}
                 variant={"destructive"}
               >
@@ -225,12 +221,12 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
         </FormItem>
         <div className="h-auto flex flex-wrap flex-start gap-2">
           {selectedSensors.map((sensor, index) => (
-            <div id={`sensor${index}`} key={sensor} className="flex items-center space-x-2 border-2 rounded border-black border-solid px-2 py-1 bg-gray-600">
+            <div id={`sensor${index}`} key={sensor} className="flex items-center space-x-2 border-0 rounded-full border-black border-solid px-2 py-1 bg-green-600">
               <span>
                 {sensor}
               </span>
               <Button
-                className="bg-gray-900 w-5 h-5 rounded text-white flex items-center justify-center"
+                className="bg-gray-900 w-5 h-5 rounded-full text-white flex items-center justify-center"
                 type="button"
                 onClick={() => {
                   setSelectedSensors((prev) => prev.filter((_, i) => i !== index))
