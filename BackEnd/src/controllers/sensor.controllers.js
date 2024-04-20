@@ -58,6 +58,10 @@ export const getAllSensors = asyncHandler(async (req, res) => {
                 resSensorsWithLogStatus.push({ ...sensor, logStatus: "Normal", display: sensor.display});
             }
             console.log("sensors",resSensorsWithLogStatus);
+            if (req.query.sensors) {
+                console.log("sensors",resSensorsWithLogStatus);
+                return res.status(200).json(new ApiResponse(200, resSensorsWithLogStatus.filter(sensor => sensor.display === true).map(sensor => ({...sensor, logs: sensor._doc.logs.slice(0,5)}))));
+            }
             return res.status(200).json(new ApiResponse(200, resSensorsWithLogStatus.filter(sensor => sensor.display === true)));
         }
     } else {

@@ -30,7 +30,7 @@ const SensorsPage : React.FC<SensorsPageProps> = () => {
   useEffect(() => {
     const getSensors = async () => {
       try {
-        const { data : { data } } = await axios.get(`${domain}/api/v1/sensors/${deviceId}`,{
+        const { data : { data } } = await axios.get(`${domain}/api/v1/sensors/${deviceId}?sensors=true`,{
           headers: {
             "Authorization": `Bearer ${localStorage.getItem(tokenKey)}`
           }
