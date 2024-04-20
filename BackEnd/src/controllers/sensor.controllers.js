@@ -3,6 +3,7 @@ import { Device } from "../models/device.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { Sensor } from "../models/sensor.model.js";
+import { User } from "../models/user.model.js";
 
 export const getAllSensors = asyncHandler(async (req, res) => {
     const { deviceId } = req.params;
@@ -14,11 +15,14 @@ export const getAllSensors = asyncHandler(async (req, res) => {
                 path: "sensors",
                 match: { name: { $regex: query, $options: "i" }, display: false }
             });
+            if (sensors == undefined) {
+                return res.status(404).json(new ApiResponse(404, null, "Sensor not found"));
+            }
             sensors = sensors.filter((sensor, index, self) => self.findIndex(s => s.name === sensor.name) === index);
             if (!sensors) {
                 throw new ApiError(404, 'Device not found');
             }
-            const resSensorsWithLogStatus = []
+            const resSensorsWithLogStatus = [];
             for (const sensor of sensors) {
                 const { alerts } = await Sensor.findById(sensor._id).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
                 if (alerts.length  && alerts[0].createdAt > Date.now() - 300000) {
@@ -28,7 +32,18 @@ export const getAllSensors = asyncHandler(async (req, res) => {
             }
             return res.status(200).json(new ApiResponse(200, resSensorsWithLogStatus.filter(sensor => sensor.display === true)));
         } else {
-            const { sensors } = await Device.findById(deviceId).select("sensors");
+            let sensors;
+            try {
+                const device = await Device.findById(deviceId).select("sensors institution");
+                const { institution } = await User.findById(req.user.id).select("institution");
+                console.log("device institution",device.institution.toString(),institution.toString());
+                if (device.institution.toString() != institution.toString()) {
+                    return res.status(404).json(new ApiResponse(404, null, "Device not found"));
+                }
+                sensors = device.sensors;
+            } catch {
+                return res.status(404).json(new ApiResponse(404, null, "Device not found"));
+            }
             const resSensors = []
             for (const sensorId of sensors) {
                 const sensor = await Sensor.findById(sensorId).select("-device -unit -alerts -createdAt -updatedAt -__v").populate("logs");

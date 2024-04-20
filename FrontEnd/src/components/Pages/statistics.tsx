@@ -1,7 +1,7 @@
 import { LineChart } from "@mui/x-charts/LineChart";
 import Navbar from "../Components/Navbar";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Card,
   CardHeader,
@@ -37,6 +37,7 @@ export type Log = {
 interface StatisticsPageProps {}
 
 const StatisticsPage: React.FC<StatisticsPageProps> = () => {
+  const navigate = useNavigate();
   const { deviceId, sensorId } = useParams();
   const [device, setDevice] = useState(deviceId || "");
   const [sensor, setSensor] = useState(sensorId || "");
@@ -73,18 +74,24 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
     if (!device) return;
     console.log("device", device);
     const fetchSensors = async () => {
-      const { data : { data : { sensors }  } } = await axios.get(`${domain}/api/v1/devices/${device}`, {
-        headers: {
-          "Authorization": `Bearer ${localStorage.getItem(tokenKey)}`,
+      try {
+        const { data : { data : { sensors }  } } = await axios.get(`${domain}/api/v1/devices/${device}`, {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem(tokenKey)}`,
+          }
+        });
+        setSensors(sensors.map((sensor: any) => ({
+          name: sensor.name,
+          id: sensor._id
+        })));
+        console.log("sensor data", sensors);
+        const defaultSensorId = sensors.filter((sensor: any) => sensor._id === sensorId)[0]._id;
+        setSensor(defaultSensorId ? defaultSensorId : sensors[0]._id);
+      } catch (error : any) {
+        if (error.response.status === 404) {
+          navigate('*');
         }
-      });
-      setSensors(sensors.map((sensor: any) => ({
-        name: sensor.name,
-        id: sensor._id
-      })));
-      console.log("sensor data", sensors);
-      const defaultSensorId = sensors.filter((sensor: any) => sensor._id === sensorId)[0]._id;
-      setSensor(defaultSensorId ? defaultSensorId : sensors[0]._id);
+      }
     }
     fetchSensors();
   }, [device]);
@@ -125,9 +132,18 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
   useEffect(() => {
     if (!device || !sensor) return;
     const fetchLogs = async () => {
-      const { data : { data } } = await axios.get(`${domain}/api/v1/logs/${sensor}?startDate=${startDate}&endDate=${endDate}&interval=${interval}`);
-      setLogs(data);
-      setLabels(data.map((log: Log) => log.timestamp));
+      try {
+        const { data : { data } } = await axios.get(`${domain}/api/v1/logs/${sensor}?startDate=${startDate}&endDate=${endDate}&interval=${interval}`,{
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem(tokenKey)}`,
+          }
+        });
+        setLogs(data);
+        setLabels(data.map((log: Log) => log.timestamp));
+      }
+      catch {
+        navigate('*');
+      }
     };
     fetchLogs();
   }, [device, sensor, startDate, endDate, interval]);
@@ -274,7 +290,11 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
                 <Button className="w-full" variant="secondary" onClick={async () => {
                   const toastId = toast.loading("Downloading Logs");
                   try {
-                    const { data : { data } } = await axios.get(`${domain}/api/v1/logs/${sensor}?startDate=${startDate}&endDate=${endDate}`);
+                    const { data : { data } } = await axios.get(`${domain}/api/v1/logs/${sensor}?startDate=${startDate}&endDate=${endDate}`,{
+                      headers: {
+                        "Authorization": `Bearer ${localStorage.getItem(tokenKey)}`,
+                      }
+                    });
                     DownloadLogs(data);
                     toast.success("Logs Downloaded Successfully", {id: toastId});
                   } catch (error) {

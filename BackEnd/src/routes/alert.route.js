@@ -3,13 +3,14 @@ import {
     getAllAlerts,
     getAlert
 } from "../controllers/alert.controllers.js";
+import { isLoggedIn } from "../middlewares/authentication.middleware.js";
 
 const router = Router();
 
 router.route("/:sensorId")
-    .get(getAllAlerts);
+    .get(isLoggedIn, getAllAlerts);
 
 router.route("/:id")
-    .get(getAlert)
+    .get(isLoggedIn, getAlert)
 
 export default router;

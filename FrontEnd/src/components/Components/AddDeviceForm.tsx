@@ -30,7 +30,11 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
   useEffect(() => {
     if (deviceId) {
       const getDevice = async () => {
-        const { data : { data : { name, location : { longitude, latitude }, sensors } } } = await axios.get(`${domain}/api/v1/devices/${deviceId}`);
+        const { data : { data : { name, location : { longitude, latitude }, sensors } } } = await axios.get(`${domain}/api/v1/devices/${deviceId}`, {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem(tokenKey)}`
+          }
+        });
         form.setValue("deviceName", name);
         form.setValue("longitude", longitude.toString());
         form.setValue("latitude", latitude.toString());
@@ -55,7 +59,11 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
   const [fetchedSensors, setFetchedSensors] = useState<string[]>([]);
   const getSensors = async (query : string) => {
     console.log("query",query);
-    const { data : { data } } = await axios.get(`${domain}/api/v1/sensors${deviceId ? `/${deviceId}` : ""}?query=${query}`);
+    const { data : { data } } = await axios.get(`${domain}/api/v1/sensors${deviceId ? `/${deviceId}` : ""}?query=${query}`, {
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem(tokenKey)}`
+      }
+    });
     setFetchedSensors([...new Set((data as { _doc: { name: string } }[]).map((sensor) => sensor._doc.name))]);
     search.current?.classList.add("flex");
     search.current?.classList.remove("hidden");
@@ -86,6 +94,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
           "Authorization": `Bearer ${localStorage.getItem(tokenKey)}`
         }
       });
+      console.log("data",data);
       if (data) {
         form.reset();
         setSelectedSensors([]);
@@ -93,8 +102,8 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
       }
       toast.success(`${deviceId ? "Changes Saved" : "Device Added"} Successfully`, { id: toastId })
     } catch (error : any) {
-      console.log(error);
-      toast.error(`Error ${deviceId ? "Saving Changes" : "Adding Device"} : ${error.response.data.error || "Try Again"}`, { id: toastId })
+      console.log("error",error);
+      toast.error(`Error ${deviceId ? "Saving Changes" : "Adding Device"} : ${error.response.data.message || "Try Again"}`, { id: toastId })
     }
   }
   return (

@@ -50,11 +50,15 @@ const DeleteAlertDialog : React.FC<DeleteAlertDialogProps> = ({ deviceId, setDev
             onClick={async () => {
               const toastId = toast.loading("Deleting device...");
               try {
-                await axios.delete(`${domain}/api/v1/devices/${deviceId}`);
+                await axios.delete(`${domain}/api/v1/devices/${deviceId}`, {
+                  headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                  },
+                });
                 setDevices((prevDevices : Device[]) => prevDevices.filter((device) => device.id !== deviceId));
                 toast.success("Device deleted successfully", {id: toastId});
               } catch (error : any) {
-                toast.error(`Error Deleting Device : ${error.response.data.error}`, {id: toastId});
+                toast.error(`Error Deleting Device : ${error.response.data.message}`, {id: toastId});
               }
             }}
           >

@@ -42,39 +42,44 @@ export const getAllLogs = asyncHandler(async (req, res) => {
     }
     const { startDate, endDate, interval } = req.query;
     if (startDate && endDate) {
-        const logs = await Log.find({
-            sensor: sensorId,
-            createdAt: {
-                $gte: new Date(startDate),
-                $lte: new Date(endDate),
-            },
-        });
-        if (!logs.length) {
-            throw new ApiError(404, 'Logs not found');
-        }
-        if (interval) {
-            let intervalLogs = [];
-            if (interval === 'Hour') {
-                intervalLogs = getIntervalLogs(logs, 4);
-            } else if (interval === 'Day') {
-                intervalLogs = getIntervalLogs(logs, 96);
-            } else if (interval === 'Week') {
-                intervalLogs = getIntervalLogs(logs, 672);
-            } else if (interval === 'Month') {
-                intervalLogs = getIntervalLogs(logs, 2880);
-            } else if (interval === 'Year') {
-                intervalLogs = getIntervalLogs(logs, 34560);
-            } else {
-                throw new ApiError(400, 'Invalid interval');
+        try {
+            const logs = await Log.find({
+                sensor: sensorId,
+                createdAt: {
+                    $gte: new Date(startDate),
+                    $lte: new Date(endDate),
+                },
+            });
+            if (!logs.length) {
+                return res.status(200).json(new ApiResponse(200, []));
             }
-            return res.status(200).json(new ApiResponse(200, intervalLogs));
-        } else {
-            return res.status(200).json(new ApiResponse(200, logs.map(log => ({
-                value: log.value,
-                timestamp: log.createdAt,
-                status: log.status,
-            }))));
+            if (interval) {
+                let intervalLogs = [];
+                if (interval === 'Hour') {
+                    intervalLogs = getIntervalLogs(logs, 4);
+                } else if (interval === 'Day') {
+                    intervalLogs = getIntervalLogs(logs, 96);
+                } else if (interval === 'Week') {
+                    intervalLogs = getIntervalLogs(logs, 672);
+                } else if (interval === 'Month') {
+                    intervalLogs = getIntervalLogs(logs, 2880);
+                } else if (interval === 'Year') {
+                    intervalLogs = getIntervalLogs(logs, 34560);
+                } else {
+                    throw new ApiError(400, 'Invalid interval');
+                }
+                return res.status(200).json(new ApiResponse(200, intervalLogs));
+            } else {
+                return res.status(200).json(new ApiResponse(200, logs.map(log => ({
+                    value: log.value,
+                    timestamp: log.createdAt,
+                    status: log.status,
+                }))));
+            }
+        } catch {
+            return res.status(404).json(new ApiResponse(404, 'Logs not found'));
         }
+        
     }
     const logs = await Log.find({ sensor: sensorId });
     res.status(200).json(new ApiResponse(200, logs));
@@ -84,7 +89,7 @@ export const getLog = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const log = await Log.findById(id);
     if (!log) {
-        throw new ApiError(404, 'Log not found');
+        return res.status(404).json(new ApiResponse(404, 'Log not found'));
     }
     res.status(200).json(new ApiResponse(200, log));
 });

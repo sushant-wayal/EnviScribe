@@ -27,7 +27,7 @@ export const getAlert = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const alert = await Alert.findById(id);
     if (!alert) {
-        throw new ApiError(404, 'Alert not found');
+        return res.status(404).json(new ApiResponse(404, null, 'Alert not found'));
     }
     res.status(200).json(new ApiResponse(200, alert));
 });

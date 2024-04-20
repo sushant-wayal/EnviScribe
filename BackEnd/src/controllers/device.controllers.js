@@ -9,13 +9,18 @@ import { Institution } from "../models/institution.model.js";
 export const getAllDevices = asyncHandler(async (req, res) => {
     const { id } = req.user;
     const { institution } = await User.findById(id).select('institution').populate('institution').select('devices');
+    if (!institution) {
+        throw new ApiError(404, 'Institution not found');
+    }
     const devices = institution.devices;
-    const { query } = req.query;
+    if (!devices) {
+        throw new ApiError(404, 'No devices found');
+    }
     if (devices.length === 0) {
         return res.status(200).json(new ApiResponse(200, devices));
     } else {
+        const { query } = req.query;
         if (query) {
-            console.log("query",query);
             const resDevices = await Device.find({
                 name: { $regex: query, $options: 'i' },
                 institution: institution._id,
@@ -47,11 +52,16 @@ export const getAllDevices = asyncHandler(async (req, res) => {
 
 export const getDevice = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const device = await Device.findById(id).select('name location sensors').populate('sensors');
-    device.sensors = device.sensors.filter(sensor => sensor.display);
-    if (!device) {
-        throw new ApiError(404, 'Device not found');
+    let device;
+    try {
+        device = await Device.findById(id).select('name location sensors').populate('sensors');
+    } catch {
+        return res.status(404).json(new ApiResponse(404, null, 'Device not found'));
     }
+    if (!device.sensors) {
+        throw new ApiError(404, 'No sensors found');
+    }
+    device.sensors = device.sensors.filter(sensor => sensor.display);
     res.status(200).json(new ApiResponse(200, device));
 })
 
@@ -73,6 +83,9 @@ export const createDevice = asyncHandler(async (req, res) => {
             "location.longitude": longitude,
             "location.latitude": latitude,
          });
+        if (!device) {
+            return res.status(404).json(new ApiResponse(404, null, 'No device found at given location'));
+        }
         device.institution = user.institution;
         device.name = name;
         await device.save({ validateBeforeSave: false });

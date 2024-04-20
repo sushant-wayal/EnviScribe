@@ -45,7 +45,7 @@ const LoginPage = () => {
       toast.success("Logged In Successfully", { id: toastId });
     } catch (error : any) {
       console.log(error);
-      toast.error(`Error Logging In : ${error.response.data.error || "Try Again"}`, { id: toastId })
+      toast.error(`Error Logging In : ${error.response.data.message || "Try Again"}`, { id: toastId })
     }
   }
   return (

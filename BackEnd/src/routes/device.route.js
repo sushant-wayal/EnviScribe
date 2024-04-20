@@ -11,13 +11,13 @@ const router = Router();
 
 router.route("/")
     .get(isLoggedIn, getAllDevices)
-    .post(createDevice);
+    .post(isLoggedIn, createDevice);
 
 router.route("/add")
     .post(isLoggedIn, createDevice);
 
 router.route("/:id")
-    .get(getDevice)
-    .delete(deleteDevice);
+    .get(isLoggedIn, getDevice)
+    .delete(isLoggedIn, deleteDevice);
 
 export default router;

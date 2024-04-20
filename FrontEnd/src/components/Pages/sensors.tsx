@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SensorCard from "../Components/SensorCard";
-import { domain } from "@/constants";
+import { domain, tokenKey } from "@/constants";
 import Loader from "../Components/Loader";
 
 interface SensorsPageProps {}
@@ -23,23 +23,35 @@ type Sensor = {
 }
 
 const SensorsPage : React.FC<SensorsPageProps> = () => {
+  const navigate = useNavigate();
   const { deviceId } = useParams();
   const [sensors, setSensors] = useState<Sensor[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const getSensors = async () => {
-      const { data : { data } } = await axios.get(`${domain}/api/v1/sensors/${deviceId}`);
-      setSensors(data.map((sensor: any) => {
-        const { _doc, logStatus } = sensor;
-        return{
-        ..._doc,
-        id: _doc._id,
-        logs: _doc.logs.slice(_doc.logs.length-5, _doc.logs.length).map((log: any) => ({
-            ...log,
-            timestamp: log.createdAt.toString().split('T')[1].substring(0,5),
-          })),
-        logStatus
-      }}));
+      try {
+        const { data : { data } } = await axios.get(`${domain}/api/v1/sensors/${deviceId}`,{
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem(tokenKey)}`
+          }
+        });
+        setSensors(data.map((sensor: any) => {
+          const { _doc, logStatus } = sensor;
+          return{
+          ..._doc,
+          id: _doc._id,
+          logs: _doc.logs.slice(_doc.logs.length-5, _doc.logs.length).map((log: any) => ({
+              ...log,
+              timestamp: log.createdAt.toString().split('T')[1].substring(0,5),
+            })),
+          logStatus
+        }}));
+      } catch (error : any) {
+        console.log(error.response);
+        if (error.response.status === 404) {
+          navigate('*');
+        }
+      }
       setLoading(false);
     };
     getSensors();

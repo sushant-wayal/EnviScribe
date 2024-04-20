@@ -9,10 +9,10 @@ import { isLoggedIn } from "../middlewares/authentication.middleware.js";
 const router = Router();
 
 router.route("/:sensorId")
-    .get(getAllLogs);
+    .get(isLoggedIn, getAllLogs);
 
 router.route("/:id")
-    .get(getLog)
+    .get(isLoggedIn, getLog)
 
 router.route("/generateData")
     .get(isLoggedIn, generateRandomLogs);

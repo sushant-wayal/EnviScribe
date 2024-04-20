@@ -6,7 +6,7 @@ const isLoggedIn = async (req, res, next) => {
 	const token = req.headers.authorization?.split(' ')[1] || req.cookies.token;
 	if (token) {
         try {
-            const decoded = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+            const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
             req.user = decoded;
             return next();
         } catch (error) {

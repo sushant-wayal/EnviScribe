@@ -5,11 +5,6 @@ import { ApiError } from '../utils/ApiError.js';
 import { Institution } from '../models/institution.model.js';
 import pkg from 'mongoose';
 
-// const cookieOptions = {
-//     httpOnly: true,
-//     secure: true,
-// };
-
 const { $or } = pkg;
 
 const createAccessAndRefreshToken = async (userId) => {
@@ -40,7 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
 	} = req.body;
     const allReadyExistsWithEmail = await User.findOne({ email });
     if (allReadyExistsWithEmail) {
-        throw new ApiError(400, 'User already exists');
+        return res.status(400).json(new ApiResponse(400, null, 'User with this email already exists'));
     }
     try {
         const institution = await Institution.findOne({
@@ -72,15 +67,10 @@ const registerUser = asyncHandler(async (req, res) => {
 const login = asyncHandler(async (req, res) => {
     const { usernameOrEmail, password } = req.body;
     console.log("credentials: ", usernameOrEmail, password);
-    // const inValid = req.body.some(field => field === undefined || field === '' || field === null);
-    // if (inValid) {
-    //     throw new ApiError(400, 'All fields are required');
-    // }
-    const isEmail = usernameOrEmail.includes('@');
-    const username = isEmail ? null : usernameOrEmail;
-    const email = isEmail ? usernameOrEmail : null;
-    const user = await User.findOne($or, [{ username }, { email }]);
-
+    if (!usernameOrEmail || !password) {
+        throw new ApiError(400, 'All fields are required');
+    }
+    const user = await User.findOne({ email });
     if (!user) {
         return res.status(400).json(new ApiResponse(400, null, 'No such User found'));
     }
