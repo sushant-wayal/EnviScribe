@@ -57,7 +57,7 @@ const SignUpPage = () => {
     <AuthNavbar/>
     <div className="min-h-[80vh] w-lvw flex justify-between items-center px-20">
       <img src="../../../login.svg" alt="login" className="w-1/3" />
-      <Card className="h-[500px] w-[300px] mx-auto scale-110 bg-[#687a6a] border-0 relative">
+      <Card className="h-auto w-[300px] mx-auto scale-110 bg-[#687a6a] border-0 relative">
         <CardHeader className="pb-0">
           <CardTitle className="text-center text-4xl">Sign Up</CardTitle>
         </CardHeader>
@@ -170,7 +170,7 @@ const SignUpPage = () => {
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="absolute bottom-3">
+        <CardFooter>
           <p className="text-center text-sm">
             Already have an account? <Link to="/login" className="text-white">Log In</Link>
           </p>

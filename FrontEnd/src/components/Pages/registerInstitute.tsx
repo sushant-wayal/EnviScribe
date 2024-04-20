@@ -53,8 +53,8 @@ const InstitutionregistrationPage = () => {
     <>
     <AuthNavbar/>
     <div className="min-h-[80vh] w-lvw flex justify-between items-center px-20">
-      <img src="../../../login.svg" alt="login" className="w-1/3" />
-      <Card className="h-[500px] w-[400px] mx-auto scale-110 bg-[#687a6a] border-0 relative">
+      <img src="../../../login.svg" alt="login" className="w-1/3 hidden lg:inline" />
+      <Card className="h-auto w-[400px] mx-auto scale-110 bg-[#687a6a] border-0 relative">
         <CardHeader className="pb-0">
           <CardTitle className="text-center text-4xl">Register Institute</CardTitle>
         </CardHeader>
@@ -152,7 +152,7 @@ const InstitutionregistrationPage = () => {
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="absolute bottom-3 flex justify-between items-center">
+        <CardFooter className="flex justify-center items-center">
           <p className="text-center text-sm">
             Already have an Institute Key? <Link to="/signup" className="text-white">Sign Up</Link>
           </p>
