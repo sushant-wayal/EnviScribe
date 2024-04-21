@@ -61,7 +61,7 @@ const SensorsPage : React.FC<SensorsPageProps> = () => {
   return (
     <>
       <Navbar />
-      <div className="grid grid-cols-4 min-h-screen">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 min-h-screen">
         {sensors.map((sensor, index) => {
           const { id, name, status, minValue, maxValue, logs, logStatus } = sensor;
           return <SensorCard key={index} deviceId={deviceId || ""} id={id} name={name} status={status} minValue={minValue} maxValue={maxValue} logs={logs} logStatus={logStatus}/>
