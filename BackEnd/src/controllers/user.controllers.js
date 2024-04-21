@@ -63,6 +63,7 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 const login = asyncHandler(async (req, res) => {
+    console.log("login route body",req.body);
     const { usernameOrEmail, password } = req.body;
     if (!usernameOrEmail || !password) {
         throw new ApiError(400, 'All fields are required');
