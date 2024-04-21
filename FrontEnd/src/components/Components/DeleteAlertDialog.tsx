@@ -13,7 +13,7 @@ import { Button, buttonVariants } from "../ui/button";
 import { Trash2Icon } from "lucide-react";
 import { Device } from "../Pages/home";
 import axios from "axios";
-import { domain } from "@/constants";
+import { domain, tokenKey } from "@/constants";
 import { Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 
@@ -52,7 +52,7 @@ const DeleteAlertDialog : React.FC<DeleteAlertDialogProps> = ({ deviceId, setDev
               try {
                 await axios.delete(`${domain}/api/v1/devices/${deviceId}`, {
                   headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    Authorization: `Bearer ${localStorage.getItem(tokenKey)}`,
                   },
                 });
                 setDevices((prevDevices : Device[]) => prevDevices.filter((device) => device.id !== deviceId));

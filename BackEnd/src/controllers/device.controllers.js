@@ -108,6 +108,28 @@ export const createDevice = asyncHandler(async (req, res) => {
                 }
                 await sensor.save({ validateBeforeSave: false });
             }
+            let status = "Normal";
+            for (const sensorId of sensorsId) {
+                const { display } = await Sensor.findById(sensorId).select('display');
+                if (!display) continue;
+                const { alerts } = await Sensor.findById(sensorId).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
+                if (alerts.length  && alerts[0].createdAt > Date.now() - 300000) {
+                    status = "Alert";
+                    break;
+                }
+            }
+            const newDevice = {...device._doc};
+            const diaplaysensors = [];
+            for (const sensorId of newDevice.sensors) {
+                const sensor = await Sensor.findById(sensorId);
+                if (sensor.display) diaplaysensors.push(sensorId);
+            }
+            newDevice.sensors = diaplaysensors;
+            newDevice.id = newDevice._id;
+            newDevice._id = undefined;
+            newDevice.status = status;
+            console.log("device",newDevice);
+            return res.status(201).json(new ApiResponse(201, newDevice));
         }
         res.status(201).json(new ApiResponse(201, device));
     } else {
