@@ -30,7 +30,7 @@ export const getAllSensors = asyncHandler(async (req, res) => {
                 }
                 resSensorsWithLogStatus.push({ ...sensor, logStatus: "Normal", display: sensor.display});
             }
-            return res.status(200).json(new ApiResponse(200, resSensorsWithLogStatus.filter(sensor => sensor.display === true)));
+            return res.status(200).json(new ApiResponse(200, resSensorsWithLogStatus));
         } else {
             let sensors;
             try {
@@ -66,6 +66,7 @@ export const getAllSensors = asyncHandler(async (req, res) => {
         }
     } else {
         if (query) {
+            console.log("query",query);
             const sensors = await Sensor.find({ name: { $regex: query, $options: "i" } });
             const resSensorsWithLogStatus = []
             for (const sensor of sensors) {
@@ -75,7 +76,7 @@ export const getAllSensors = asyncHandler(async (req, res) => {
                 }
                 resSensorsWithLogStatus.push({ ...sensor, logStatus: "Normal", display: sensor.display});
             }
-            return res.status(200).json(new ApiResponse(200, resSensorsWithLogStatus.filter(sensor => sensor.display === true)));
+            return res.status(200).json(new ApiResponse(200, resSensorsWithLogStatus));
         } else {
             const sensors = await Sensor.find();
             const resSensorsWithLogStatus = []
