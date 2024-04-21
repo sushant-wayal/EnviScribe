@@ -27,7 +27,6 @@ const createAccessAndRefreshToken = async (userId) => {
 }
 
 const registerUser = asyncHandler(async (req, res) => {
-    console.log("Registering user");
 	const {
 		email,
 		password,
@@ -41,7 +40,6 @@ const registerUser = asyncHandler(async (req, res) => {
         const institution = await Institution.findOne({
             key: institutionKey,
         });
-        console.log("Institution ID: ", institution._id);
         const user = await User.create({
             email,
             password,
@@ -66,7 +64,6 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const login = asyncHandler(async (req, res) => {
     const { usernameOrEmail, password } = req.body;
-    console.log("credentials: ", usernameOrEmail, password);
     if (!usernameOrEmail || !password) {
         throw new ApiError(400, 'All fields are required');
     }

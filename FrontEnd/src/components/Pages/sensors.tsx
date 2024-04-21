@@ -49,7 +49,6 @@ const SensorsPage : React.FC<SensorsPageProps> = () => {
           logStatus
         }}));
       } catch (error : any) {
-        console.log(error.response);
         if (error.response.status === 404) {
           navigate('*');
         }

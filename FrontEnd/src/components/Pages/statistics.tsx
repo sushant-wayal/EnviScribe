@@ -56,7 +56,10 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
 
   useEffect(() => {
     const token = localStorage.getItem(tokenKey);
-    if(!token) navigate("/login");
+    if(!token) {
+      navigate("/login");
+      return;
+    }
     const fetchDevices = async () => {
       const { data : { data } } = await axios.get(`${domain}/api/v1/devices`, {
         headers: {
@@ -67,14 +70,12 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
         name: device.name,
         id: device._id
       })));
-      console.log("device data",data);
       setDevice(data.filter((device: any) => device._id === device)[0]._id);
     }
     fetchDevices();
   }, []);
   useEffect(() => {
     if (!device) return;
-    console.log("device", device);
     const fetchSensors = async () => {
       try {
         const { data : { data : { sensors }  } } = await axios.get(`${domain}/api/v1/devices/${device}`, {
@@ -86,7 +87,6 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
           name: sensor.name,
           id: sensor._id
         })));
-        console.log("sensor data", sensors);
         const defaultSensorId = sensors.filter((sensor: any) => sensor._id === sensorId)[0]._id;
         setSensor(defaultSensorId ? defaultSensorId : sensors[0]._id);
       } catch (error : any) {
@@ -144,7 +144,9 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
         setLabels(data.map((log: Log) => log.timestamp));
       }
       catch {
-        navigate('*');
+        if (localStorage.getItem(tokenKey)) {
+          navigate('*');
+        }
       }
     };
     fetchLogs();

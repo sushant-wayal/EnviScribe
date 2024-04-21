@@ -10,7 +10,6 @@ export const getAllSensors = asyncHandler(async (req, res) => {
     const { query } = req.query;
     if (deviceId) {
         if (query != undefined) {
-            console.log("query",query);
             let { sensors } = await Device.findById(deviceId).select("sensors").populate({
                 path: "sensors",
                 match: { name: { $regex: query, $options: "i" } }
@@ -36,7 +35,6 @@ export const getAllSensors = asyncHandler(async (req, res) => {
             try {
                 const device = await Device.findById(deviceId).select("sensors institution");
                 const { institution } = await User.findById(req.user.id).select("institution");
-                console.log("device institution",device.institution.toString(),institution.toString());
                 if (device.institution.toString() != institution.toString()) {
                     return res.status(404).json(new ApiResponse(404, null, "Device not found"));
                 }
@@ -57,16 +55,13 @@ export const getAllSensors = asyncHandler(async (req, res) => {
                 }
                 resSensorsWithLogStatus.push({ ...sensor, logStatus: "Normal", display: sensor.display});
             }
-            console.log("sensors",resSensorsWithLogStatus);
             if (req.query.sensors) {
-                console.log("sensors",resSensorsWithLogStatus);
                 return res.status(200).json(new ApiResponse(200, resSensorsWithLogStatus.filter(sensor => sensor.display === true).map(sensor => ({...sensor, logs: sensor._doc.logs.slice(0,5)}))));
             }
             return res.status(200).json(new ApiResponse(200, resSensorsWithLogStatus.filter(sensor => sensor.display === true)));
         }
     } else {
         if (query) {
-            console.log("query",query);
             const sensors = await Sensor.find({ name: { $regex: query, $options: "i" } });
             const resSensorsWithLogStatus = []
             for (const sensor of sensors) {

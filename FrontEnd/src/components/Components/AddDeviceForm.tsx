@@ -58,7 +58,6 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
   const [sensorName, setSensorName] = useState<string>("")
   const [fetchedSensors, setFetchedSensors] = useState<string[]>([]);
   const getSensors = async (query : string) => {
-    console.log("query",query);
     const { data : { data } } = await axios.get(`${domain}/api/v1/sensors${deviceId ? `/${deviceId}` : ""}?query=${query}`, {
       headers: {
         "Authorization": `Bearer ${localStorage.getItem(tokenKey)}`
@@ -95,7 +94,6 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
           "Authorization": `Bearer ${localStorage.getItem(tokenKey)}`
         }
       });
-      console.log("data",data);
       if (data) {
         form.reset();
         setSelectedSensors([]);
@@ -103,7 +101,6 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
       }
       toast.success(`${deviceId ? "Changes Saved" : "Device Added"} Successfully`, { id: toastId })
     } catch (error : any) {
-      console.log("error",error);
       toast.error(`Error ${deviceId ? "Saving Changes" : "Adding Device"} : ${error.response.data.message || "Try Again"}`, { id: toastId })
     }
   }

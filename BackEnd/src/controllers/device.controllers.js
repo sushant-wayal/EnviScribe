@@ -128,7 +128,6 @@ export const createDevice = asyncHandler(async (req, res) => {
             newDevice.id = newDevice._id;
             newDevice._id = undefined;
             newDevice.status = status;
-            console.log("device",newDevice);
             return res.status(201).json(new ApiResponse(201, newDevice));
         }
         res.status(201).json(new ApiResponse(201, device));
@@ -148,7 +147,6 @@ export const createDevice = asyncHandler(async (req, res) => {
 })
 
 export const deleteDevice = asyncHandler(async (req, res) => {
-    console.log("delte device");
     const { id } = req.params;
     const device = await Device.findById(id).select('institution sensors');
     if (!device) {

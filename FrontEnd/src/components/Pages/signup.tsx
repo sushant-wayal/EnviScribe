@@ -48,7 +48,6 @@ const SignUpPage = () => {
       navigate('/home');
       toast.success("Signed Up Successfully", { id: toastId });
     } catch (error : any) {
-      console.log(error);
       toast.error(`Error Signing Up : ${error.response.data.error || "Try Again"}`, { id: toastId })
     }
   }

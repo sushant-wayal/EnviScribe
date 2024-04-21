@@ -14,7 +14,7 @@ const NotFoundPage : React.FC<NotFoundPageProps> = () => {
       <div className="flex justify-center mt-10 gap-8">
         <h1 className="text-center text-2xl text-green-600">Requested Information Is not Available</h1>
         <Button className="bg-green-600" onClick={() => {
-          navigate(-1);
+          navigate("/home");
         }
         }><ArrowLeftCircleIcon className="mr-2"/>Go Back</Button>
       </div>

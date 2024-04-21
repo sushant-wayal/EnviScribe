@@ -45,7 +45,6 @@ const InstitutionregistrationPage = () => {
       navigate('/signup');
       toast.success("Institute Registered Successfully", { id: toastId });
     } catch (error : any) {
-      console.log(error);
       toast.error(`Error Registering Institute : ${error.response.data.message || "Try Again"}`, { id: toastId })
     }
   }

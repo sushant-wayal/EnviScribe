@@ -32,7 +32,6 @@ const Navbar : React.FC<NavbarProps> = () => {
         'Authorization': `Bearer ${localStorage.getItem(tokenKey)}`
       }
     });
-    console.log("data",data)
     setFetchedDevices(data.map((device : any) => {
       const { _id, name, location, sensors } = device;
       return {
@@ -133,12 +132,12 @@ const Navbar : React.FC<NavbarProps> = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent className='z-[1002]'>
             <DropdownMenuItem className='hover:bg-green-300'>
-              <Link to="/home"><div className='flex gap-3'><Home/><p className='text-xl hover:underline'>Home</p></div></Link>
+              <Link to="/home"><div className='flex gap-3'><Home size={20}/><p className='hover:underline'>Home</p></div></Link>
             </DropdownMenuItem>
             <DropdownMenuItem className='hover:bg-green-300'>
-              <Button variant="ghost" onClick={Logout} className='hover:bg-transparent hover:text-white hover:underline'>
-                <LogOutIcon className='mr-2'/>
-                <p className='text-xl'>Logout</p>
+              <Button variant="ghost" onClick={Logout} className='hover:bg-transparent hover:underline hover:text-black p-0'>
+                <LogOutIcon size={20} className='mr-2 ml-0'/>
+                <p>Logout</p>
               </Button>
             </DropdownMenuItem>
           </DropdownMenuContent>
