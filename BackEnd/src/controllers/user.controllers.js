@@ -70,7 +70,7 @@ const login = asyncHandler(async (req, res) => {
     if (!usernameOrEmail || !password) {
         throw new ApiError(400, 'All fields are required');
     }
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email : usernameOrEmail });
     if (!user) {
         return res.status(400).json(new ApiResponse(400, null, 'No such User found'));
     }

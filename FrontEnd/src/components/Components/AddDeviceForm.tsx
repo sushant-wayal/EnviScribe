@@ -133,7 +133,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
             </FormItem>
           )}
         />
-        <div className="w-full flex justify-between">
+        <div className="w-full flex justify-between gap-2">
           <FormField
             control={form.control}
             name="longitude"
