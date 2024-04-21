@@ -65,6 +65,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
       }
     });
     setFetchedSensors([...new Set((data as { _doc: { name: string } }[]).map((sensor) => sensor._doc.name))]);
+    setFetchedSensors(prev => prev.filter((sensor) => !selectedSensors.includes(sensor)));
     search.current?.classList.add("flex");
     search.current?.classList.remove("hidden");
   }
@@ -191,7 +192,7 @@ const AddDeviceForm: React.FC<AddDeviceFormProps> = ({ setDevices, deviceId }) =
                   value={sensorName}
                   onChange={(e) => {
                     const curr = e.target.value
-                    setSensorName(curr)
+                    setSensorName(() => curr)
                     getSensors(curr);
                   }}
                   className="bg-white placeholder:text-[#444444] text-[#222222]"

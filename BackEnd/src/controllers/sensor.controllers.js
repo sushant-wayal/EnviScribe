@@ -13,7 +13,7 @@ export const getAllSensors = asyncHandler(async (req, res) => {
             console.log("query",query);
             let { sensors } = await Device.findById(deviceId).select("sensors").populate({
                 path: "sensors",
-                match: { name: { $regex: query, $options: "i" }, display: false }
+                match: { name: { $regex: query, $options: "i" } }
             });
             if (sensors == undefined) {
                 return res.status(404).json(new ApiResponse(404, null, "Sensor not found"));
