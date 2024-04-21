@@ -170,14 +170,24 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
     const excelBuffer = convertJSONtoExcel(logsDatas.map((logsData) => ({ ...logsData, value: logsData.value})));
     downloadExcel(excelBuffer, 'logs');
   };
+  const [viewportWidth, setViewportSize] = useState(window.innerWidth);
+  useEffect(() => {
+    function handleResize() {
+      setViewportSize(window.innerWidth);
+    }
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   return (
     <>
       <Navbar />
-      <div className="flex justify-between w-lvw min-h-[78vh]">
-        <div className="flex-grow relative bg-[#687a6a] mx-5 rounded-xl">
+      <div className="flex flex-col md:flex-row gap-5 md:gap-0 justify-between w-lvw min-h-[78vh]">
+        <div className="w-11/12 md:w-2/3 relative bg-[#687a6a] mx-auto md:mx-4 rounded-xl">
           { chartLabels.length == logs.length ? 
           <LineChart
-            width={800}
+            width={viewportWidth > 768 ? viewportWidth * 0.55 : viewportWidth * 0.9}
             height={500}
             series={[
               {data : logs.map(log => parseFloat(log.value)), label: sensors.filter(sensorId => sensorId.id === sensor)[0]?.name || "No Data" },
@@ -188,13 +198,13 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
             <Loader size={50} loading={true} />
             </div>}
         </div>
-        <Card className="w-auto mr-10 relative bg-[#4f6752] text-white border-0">
+        <Card className="w-11/12 h-[520px] sm:h-[400px] md:h-auto md:flex-grow mx-auto md:mr-10 relative bg-[#4f6752] text-white border-0">
           <CardHeader>
             <CardTitle>Controls</CardTitle>
             <CardDescription className="text-[#DDDDDD]">Change Controls to see Statistical Changes</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-start justify-start gap-8">
-            <div className="flex flex-col items-start justify-start gap-12">
+            <div className="flex flex-col items-start justify-start gap-4 lg:gap-12">
               <div className="flex flex-col gap-2">
                 <Label>
                   Device
@@ -213,7 +223,7 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
                     </SelectContent>
                   </Select>
               </div>
-              <div className="flex items-center justify-center gap-36">
+              <div className="w-full flex flex-col sm:flex-row md:flex-col lg:flex-row items-start sm:items-center md:items-start lg:items-center justify-between gap-2">
                 <div className="flex flex-col gap-2">
                   <Label>
                     Sensor
@@ -252,7 +262,7 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
                     </Select>
                 </div>
               </div>
-              <div className="flex items-center justify-center gap-[84px]">
+              <div className="w-full flex flex-col sm:flex-row md:flex-col items-start sm:items-center md:items-start gap-3 xl:flex-row xl:items-center justify-between">
                 <div className="flex flex-col gap-2">
                   <Label>Start Date</Label>
                   <DatePicker date={startDate} setDate={setStartDate} maxDate={new Date((endDate?.getTime() || Date.now())-24*60*60*1000)}/>
