@@ -43,8 +43,8 @@ const Navbar : React.FC<NavbarProps> = () => {
     }));
   };
   return (
-    <>
-      <div className='sticky top-5 mx-2 mb-10 rounded-full w-[568px] py-2 px-4 hidden md:flex justify-between items-center border-0 border-black border-solid z-[1001] bg-green-600 text-white left-full lg:left-1/2 lg:-translate-x-1/2'>
+    <div className='bg-[#302f2f] sticky top-0 pt-5  z-[1001] h-auto mb-5 shadow-lg shadow-[#302f2f]/70'>
+      <div className='sticky top-5 mx-2 mb-5 rounded-full w-[568px] py-2 px-4 hidden md:flex justify-between items-center border-0 border-black border-solid bg-green-600 text-white left-full lg:left-1/2 lg:-translate-x-1/2'>
         <Link to="/home"><div className='flex gap-3'><Home/><p className='text-xl hover:underline'>Home</p></div></Link>
         <div className='flex gap-1 justify-center items-center px-2 py-2'>
           <Search/>
@@ -143,7 +143,7 @@ const Navbar : React.FC<NavbarProps> = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-    </>
+    </div>
   )
 }
 
