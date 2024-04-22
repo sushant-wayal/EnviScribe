@@ -130,7 +130,7 @@ const LoginPage = () => {
             </form>
           </Form>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="flex justify-center items-center">
           <p className="text-center text-sm">
             Don't have an account? <Link to="/signup" className="text-white">Sign Up</Link>
           </p>
