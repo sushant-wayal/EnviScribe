@@ -1,4 +1,4 @@
-export const domain = import.meta.env.BACKEND_DOMAIN || "http://localhost:3000";
+export const domain = import.meta.env.BACKEND_DOMAIN || "https://enviscribe-backend.onrender.com";
 export const tokenKey = "gJ}2l:Gh2yxa!b*aJ&y[Mr+7{*M=Yn";
 
 export const defaultLocation = [31.7754, 30.9861];
