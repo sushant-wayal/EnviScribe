@@ -3,6 +3,7 @@ import {
     generateRandomLogs,
     getAllLogs,
     getLog,
+    testRoute
 } from "../controllers/log.controllers.js";
 import { isLoggedIn } from "../middlewares/authentication.middleware.js";
 
@@ -16,5 +17,8 @@ router.route("/:id")
 
 router.route("/generateData")
     .get(isLoggedIn, generateRandomLogs);
+
+router.route("/testRoute")
+    .post(testRoute)
 
 export default router;
