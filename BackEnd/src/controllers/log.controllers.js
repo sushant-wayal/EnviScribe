@@ -5,6 +5,7 @@ import { Log } from "../models/log.model.js";
 import { Device } from "../models/device.model.js";
 import { Sensor } from "../models/sensor.model.js";
 import { User } from "../models/user.model.js";
+import { Institution } from "../models/institution.model.js";
 
 const getIntervalLogs = (logs, intervalValue) => {
     const intervalLogs = [];
@@ -118,4 +119,16 @@ export const generateRandomLogs = asyncHandler(async (req, res) => {
         }
     }
     return res.status(200).json(new ApiResponse(200, 'Logs generated successfully'));
+})
+
+let num = 0
+
+export const testRoute = asyncHandler(async (req,res) => {
+    await Institution.create({
+        name: "Test"+num.toString(),
+        email: "1@gmail.com"+num.toString(),
+        key: num.toString(),
+    })
+    num++;
+    return res.status(200).json(new ApiResponse(200, 'Test Successfull'));
 })
