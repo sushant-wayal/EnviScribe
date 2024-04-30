@@ -142,7 +142,10 @@ export const createDevice = asyncHandler(async (req, res) => {
             sensorsId.push(_id);
         }
         const device = await Device.findByIdAndUpdate(newDevice._id, { sensors: sensorsId })
-        res.status(201).json(new ApiResponse(201, device));
+        res.status(201).json(new ApiResponse(201, {
+            deviceId : device._id,
+            sensors : sensorsId,
+        }));
     }
 })
 
