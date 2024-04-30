@@ -165,7 +165,7 @@ export const createLog = asyncHandler(async (req, res) => {
                 logs: log._id,
             },
         });
-        res.status(201).json(new ApiResponse(201, log));
+        return res.status(201).json(new ApiResponse(201, log));
     }
     const logValues = sensorLogs.map(log => log.value);
     const meanValue = logValues.reduce((sum, value) => sum + value, 0) / logValues.length;
