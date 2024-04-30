@@ -23,6 +23,6 @@ router.route("/testRoute")
     .post(testRoute)
 
 router.route("/create")
-    .get(createLog)
+    .post(createLog)
 
 export default router;
