@@ -124,11 +124,34 @@ export const generateRandomLogs = asyncHandler(async (req, res) => {
 let num = 0
 
 export const testRoute = asyncHandler(async (req,res) => {
-    await Institution.create({
-        name: "Test"+num.toString(),
-        email: "1@gmail.com"+num.toString(),
-        key: num.toString(),
-    })
-    num++;
     return res.status(200).json(new ApiResponse(200, 'Test Successfull'));
+    // await Institution.create({
+    //     name: "Test"+num.toString(),
+    //     email: "1@gmail.com"+num.toString(),
+    //     key: num.toString(),
+    // })
+    // num++;
+    // return res.status(200).json(new ApiResponse(200, 'Test Successfull'));
 })
+
+export const createLog = asyncHandler(async (req, res) => {
+    const { sensorId, value, status } = req.body;
+    if (!sensorId || !value || !status) {
+        throw new ApiError(400, 'Sensor ID, value and status are required');
+    }
+    const sensor = await Sensor.findById(sensorId);
+    if (!sensor) {
+        throw new ApiError(404, 'Sensor not found');
+    }
+    const log = await Log.create({
+        sensor: sensorId,
+        value,
+        status,
+    });
+    await Sensor.findByIdAndUpdate(sensorId, {
+        $push: {
+            logs: log._id,
+        },
+    });
+    res.status(201).json(new ApiResponse(201, log));
+});
