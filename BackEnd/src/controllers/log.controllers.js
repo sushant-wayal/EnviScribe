@@ -121,17 +121,14 @@ export const generateRandomLogs = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, 'Logs generated successfully'));
 })
 
-let num = 0
-
 export const testRoute = asyncHandler(async (req,res) => {
+    await Institution.create({
+        name: "Test"+num.toString(),
+        email: "1@gmail.com"+num.toString(),
+        key: num.toString(),
+    })
+    num++;
     return res.status(200).json(new ApiResponse(200, 'Test Successfull'));
-    // await Institution.create({
-    //     name: "Test"+num.toString(),
-    //     email: "1@gmail.com"+num.toString(),
-    //     key: num.toString(),
-    // })
-    // num++;
-    // return res.status(200).json(new ApiResponse(200, 'Test Successfull'));
 })
 
 export const createLog = asyncHandler(async (req, res) => {
