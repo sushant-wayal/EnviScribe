@@ -3,7 +3,8 @@ import {
     generateRandomLogs,
     getAllLogs,
     getLog,
-    testRoute
+    testRoute,
+    createLog,
 } from "../controllers/log.controllers.js";
 import { isLoggedIn } from "../middlewares/authentication.middleware.js";
 
@@ -20,5 +21,8 @@ router.route("/generateData")
 
 router.route("/testRoute")
     .post(testRoute)
+
+router.route("/create")
+    .get(createLog)
 
 export default router;
