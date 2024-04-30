@@ -15,6 +15,10 @@ const logSchema = new mongoose.Schema({
         enum: ["normal", "warning", "alert"],
         default: "normal",
     },
+    onHold: {
+        type: Boolean,
+        default: false,
+    },
 }, { timestamps: true });
 
 export const Log = mongoose.model("Log", logSchema);

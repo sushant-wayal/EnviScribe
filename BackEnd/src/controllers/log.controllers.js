@@ -132,19 +132,66 @@ export const testRoute = asyncHandler(async (req,res) => {
 })
 
 export const createLog = asyncHandler(async (req, res) => {
-    const { sensorId, value, status } = req.body;
-    if (!sensorId || !value || !status) {
-        throw new ApiError(400, 'Sensor ID, value and status are required');
+    const { sensorId, value } = req.body;
+    if (!sensorId || !value) {
+        throw new ApiError(400, 'Sensor ID and value are required');
     }
     const sensor = await Sensor.findById(sensorId);
     if (!sensor) {
         throw new ApiError(404, 'Sensor not found');
+    }
+    const { minValue, maxValue } = sensor;
+    const range = maxValue - minValue;
+    let status = "normal";
+    if (value < minValue || value > maxValue) {
+        status = "alert";
+    } else if (value < minValue + range*0.2 || value > maxValue - range*0.2) {
+        status = "warning";
     }
     const log = await Log.create({
         sensor: sensorId,
         value,
         status,
     });
+    const sensorLogs = await Log.find({
+        sensor: sensorId,
+        onHold: false
+    }).sort({ createdAt: -1 }).limit(10);
+    if (sensorLogs.length < 10) {
+        await Sensor.findByIdAndUpdate(sensorId, {
+            $push: {
+                logs: log._id,
+            },
+        });
+        res.status(201).json(new ApiResponse(201, log));
+    }
+    const logValues = sensorLogs.map(log => log.value);
+    const meanValue = logValues.reduce((sum, value) => sum + value, 0) / logValues.length;
+    let isOutlier = false;
+    if (Math.abs(value - meanValue) > range * 0.5) {
+        isOutlier = true;
+    }
+    const latestLogs = await Log.find({
+        sensor: sensorId,
+        onHold: true
+    }).sort({ createdAt: -1 }).limit(2);
+    if (isOutlier) {
+        if (latestLogs.length >= 2) {
+            await Log.updateMany(
+                { _id: { $in: latestLogs.map(log => log._id) } },
+                { $set: { onHold: false } }
+            );
+        } else {
+            await Log.findByIdAndUpdate(log._id, { onHold: true });
+        }
+    } else {
+        if (latestLogs.length <= 2) {
+            await Log.updateMany(
+                { _id: { $in: latestLogs.map(log => log._id) } },
+                { $set: { onHold: false, value: meanValue, status: "normal" } }
+            );
+        }
+    }
     await Sensor.findByIdAndUpdate(sensorId, {
         $push: {
             logs: log._id,
