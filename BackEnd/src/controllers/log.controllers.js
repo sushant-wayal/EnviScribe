@@ -135,7 +135,7 @@ export const createLog = asyncHandler(async (req, res) => {
     const { sensorId, value } = req.body;
     console.log("sensorId",sensorId);
     console.log("value",value);
-    if (!sensorId || !value) {
+    if (!sensorId || value === undefined) {
         throw new ApiError(400, 'Sensor ID and value are required');
     }
     const sensor = await Sensor.findById(sensorId);
