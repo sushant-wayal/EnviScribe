@@ -66,6 +66,8 @@ export const getAllLogs = asyncHandler(async (req, res) => {
                     intervalLogs = getIntervalLogs(logs, 2880);
                 } else if (interval === 'Year') {
                     intervalLogs = getIntervalLogs(logs, 34560);
+                } else if (interval == '15 Min') {
+                    intervalLogs = getIntervalLogs(logs, 1);
                 } else {
                     throw new ApiError(400, 'Invalid interval');
                 }

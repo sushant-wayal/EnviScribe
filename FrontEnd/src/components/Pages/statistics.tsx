@@ -97,7 +97,7 @@ const StatisticsPage: React.FC<StatisticsPageProps> = () => {
     }
     fetchSensors();
   }, [device]);
-  const intervals = ["Hour", "Day", "Week", "Month", "Year"];
+  const intervals = ["15 Min","Hour", "Day", "Week", "Month", "Year"];
   const [interval, setInterval] = useState("Hour");
   const [chartLabels, setChartLabels] = useState<string[]>([]);
   useEffect(() => {
