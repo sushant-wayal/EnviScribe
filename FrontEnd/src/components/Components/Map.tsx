@@ -51,7 +51,7 @@ const Map: React.FC<MapProps> = ({ className, zoom, markers }) => {
         return;
       } else {
         for (let i = 0; i < markers.length; i++) {
-          if (markers[i].status !== "Normal") {
+          if (markers[i].status !== "normal") {
             setCenter([markers[i].position[0], markers[i].position[1]]);
             return
           }
@@ -78,7 +78,7 @@ const Map: React.FC<MapProps> = ({ className, zoom, markers }) => {
         iconCreateFunction={createCustomClusterIcon}
       >
         {markers && markers.map(({ position, popup, status }) => {
-          return <Marker key={position.toString()} position={position as LatLngTuple} icon={status == "Normal" ? customIcon : customIconDanger}>
+          return <Marker key={position.toString()} position={position as LatLngTuple} icon={status == "normal" ? customIcon : customIconDanger}>
             <Popup>{popup}</Popup>
           </Marker>
         })}
