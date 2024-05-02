@@ -25,9 +25,9 @@ export const getAllSensors = asyncHandler(async (req, res) => {
             for (const sensor of sensors) {
                 const { alerts } = await Sensor.findById(sensor._id).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
                 if (alerts.length  && alerts[0].createdAt > Date.now() - 300000) {
-                    resSensorsWithLogStatus.push({ ...sensor, logStatus: "Alert", display: sensor.display});
+                    resSensorsWithLogStatus.push({ ...sensor, logStatus: "alert", display: sensor.display});
                 }
-                resSensorsWithLogStatus.push({ ...sensor, logStatus: "Normal", display: sensor.display});
+                resSensorsWithLogStatus.push({ ...sensor, logStatus: "normal", display: sensor.display});
             }
             return res.status(200).json(new ApiResponse(200, resSensorsWithLogStatus));
         } else {
@@ -51,9 +51,9 @@ export const getAllSensors = asyncHandler(async (req, res) => {
             for (const sensor of resSensors) {
                 const { alerts } = await Sensor.findById(sensor._id).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
                 if (alerts.length  && alerts[0].createdAt > Date.now() - 300000) {
-                    resSensorsWithLogStatus.push({ ...sensor, logStatus: "Alert", display: sensor.display});
+                    resSensorsWithLogStatus.push({ ...sensor, logStatus: "alert", display: sensor.display});
                 }
-                resSensorsWithLogStatus.push({ ...sensor, logStatus: "Normal", display: sensor.display});
+                resSensorsWithLogStatus.push({ ...sensor, logStatus: "normal", display: sensor.display});
             }
             if (req.query.sensors) {
                 return res.status(200).json(new ApiResponse(200, resSensorsWithLogStatus.filter(sensor => sensor.display === true).map(sensor => ({...sensor, logs: sensor._doc.logs.slice(0,5)}))));
@@ -67,9 +67,9 @@ export const getAllSensors = asyncHandler(async (req, res) => {
             for (const sensor of sensors) {
                 const { alerts } = await Sensor.findById(sensor._id).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
                 if (alerts.length  && alerts[0].createdAt > Date.now() - 300000) {
-                    resSensorsWithLogStatus.push({ ...sensor, logStatus: "Alert", display: sensor.display});
+                    resSensorsWithLogStatus.push({ ...sensor, logStatus: "alert", display: sensor.display});
                 }
-                resSensorsWithLogStatus.push({ ...sensor, logStatus: "Normal", display: sensor.display});
+                resSensorsWithLogStatus.push({ ...sensor, logStatus: "normal", display: sensor.display});
             }
             return res.status(200).json(new ApiResponse(200, resSensorsWithLogStatus));
         } else {
@@ -78,9 +78,9 @@ export const getAllSensors = asyncHandler(async (req, res) => {
             for (const sensor of sensors) {
                 const { alerts } = await Sensor.findById(sensor._id).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
                 if (alerts.length  && alerts[0].createdAt > Date.now() - 300000) {
-                    resSensorsWithLogStatus.push({ ...sensor, logStatus: "Alert", display: sensor.display});
+                    resSensorsWithLogStatus.push({ ...sensor, logStatus: "alert", display: sensor.display});
                 }
-                resSensorsWithLogStatus.push({ ...sensor, logStatus: "Normal", display: sensor.display});
+                resSensorsWithLogStatus.push({ ...sensor, logStatus: "normal", display: sensor.display});
             }
             return res.status(200).json(new ApiResponse(200, resSensorsWithLogStatus.filter(sensor => sensor.display === true)));
         }

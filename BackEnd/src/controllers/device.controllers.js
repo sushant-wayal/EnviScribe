@@ -35,7 +35,7 @@ export const getAllDevices = asyncHandler(async (req, res) => {
             }
             for (const device of resDevices) {
                 const { sensors } = device;
-                let status = "Normal";
+                let status = "normal";
                 for (const sensor of sensors) {
                     const { alerts } = await Sensor.findById(sensor._id).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
                     if (alerts.length  && alerts[0].createdAt > Date.now() - 300000) {
@@ -108,7 +108,7 @@ export const createDevice = asyncHandler(async (req, res) => {
                 }
                 await sensor.save({ validateBeforeSave: false });
             }
-            let status = "Normal";
+            let status = "normal";
             for (const sensorId of sensorsId) {
                 const { display } = await Sensor.findById(sensorId).select('display');
                 if (!display) continue;
