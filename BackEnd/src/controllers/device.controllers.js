@@ -37,9 +37,9 @@ export const getAllDevices = asyncHandler(async (req, res) => {
                 const { sensors } = device;
                 let status = "normal";
                 for (const sensor of sensors) {
-                    const { alerts } = await Sensor.findById(sensor._id).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
-                    if (alerts.length  && alerts[0].createdAt > Date.now() - 300000) {
-                        status = "Alert";
+                    const { logs } = await Sensor.findById(sensor._id).select('logs').populate('logs').sort({ createdAt: -1 }).limit(1);
+                    if (logs.length  && logs[0].createdAt > Date.now() - 900000) {
+                        status = logs[0].status;
                         break;
                     }
                 }
@@ -112,9 +112,9 @@ export const createDevice = asyncHandler(async (req, res) => {
             for (const sensorId of sensorsId) {
                 const { display } = await Sensor.findById(sensorId).select('display');
                 if (!display) continue;
-                const { alerts } = await Sensor.findById(sensorId).select('alerts').populate('alerts').sort({ createdAt: -1 }).limit(1);
-                if (alerts.length  && alerts[0].createdAt > Date.now() - 300000) {
-                    status = "Alert";
+                const { logs } = await Sensor.findById(sensorId).select('logs').populate('logs').sort({ createdAt: -1 }).limit(1);
+                if (logs.length  && logs[0].createdAt > Date.now() - 900000) {
+                    status = logs[0].status;
                     break;
                 }
             }

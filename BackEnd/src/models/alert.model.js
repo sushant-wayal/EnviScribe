@@ -12,7 +12,7 @@ const alertSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ["mild", "moderate", "severe"],
+        enum: ["warning", "alert"],
         required: true,
     },
 }, { timestamps: true });

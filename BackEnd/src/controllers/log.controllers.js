@@ -30,7 +30,7 @@ const getIntervalLogs = (logs, intervalValue) => {
         intervalLogs.push({
             value,
             timestamp: logs[i].createdAt,
-            status: alert/logs.length > 0.4 ? 'alert' : 'normal',
+            status: alert/logs.length > 0.4 ? 'alert' : alert/logs.length > 0.2 ? 'warning' : 'normal',
         });
     }
     return intervalLogs;
@@ -190,9 +190,15 @@ export const createLog = asyncHandler(async (req, res) => {
         }
     } else {
         if (latestLogs.length <= 2) {
+            let currStatus = "normal";
+            if (meanValue >= maxValue) {
+                currStatus = "alert";
+            } else if (meanValue > maxValue - range*0.2) {
+                currStatus = "warning";
+            }
             await Log.updateMany(
                 { _id: { $in: latestLogs.map(log => log._id) } },
-                { $set: { onHold: false, value: meanValue, status: "normal" } }
+                { $set: { onHold: false, value: meanValue, status: currStatus } }
             );
         }
     }

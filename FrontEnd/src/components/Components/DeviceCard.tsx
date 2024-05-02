@@ -42,7 +42,7 @@ const DeviceCard : React.FC<DeviceCardProps> = ({
 }) => {
   return (
     <Link className="mx-10 max-w-[1300px] w-[70%] sm:w-[90%] hover:opacity-80" to={`/device/${id}`}>
-      <Card className={`flex flex-col md:flex-row justify-center gap-3 sm:justify-between h-auto sm:h-24 py-2 md:py-1 md:h-auto items-center mx-5 ${status == "Normal" ? "bg-green-600" : status == "Warning" ? "bg-yellow-600" : "bg-red-600"} border-0`}>
+      <Card className={`flex flex-col md:flex-row justify-center gap-3 sm:justify-between h-auto sm:h-24 py-2 md:py-1 md:h-auto items-center mx-5 ${status == "normal" ? "bg-green-600" : status == "warning" ? "bg-yellow-600" : "bg-red-600"} border-0`}>
         <CardHeader className="flex flex-row gap-3 items-center justify-center p-0 md:p-6">
           <CardTitle>{name}</CardTitle>
           <CardDescription><Badge content={status}/></CardDescription>
