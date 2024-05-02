@@ -147,9 +147,9 @@ export const createLog = asyncHandler(async (req, res) => {
     const { minValue, maxValue } = sensor;
     const range = maxValue - minValue;
     let status = "normal";
-    if (value < minValue || value > maxValue) {
+    if (value >= maxValue) {
         status = "alert";
-    } else if (value < minValue + range*0.2 || value > maxValue - range*0.2) {
+    } else if (value > maxValue - range*0.2) {
         status = "warning";
     }
     const log = await Log.create({
