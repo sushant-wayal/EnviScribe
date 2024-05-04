@@ -15,14 +15,6 @@ const institutionSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
-    // logo: {
-    //     type: String,
-    //     default: "",
-    // },
-    // admins: [{
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "User",
-    // }],
     users: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",

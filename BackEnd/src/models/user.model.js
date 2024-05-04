@@ -3,16 +3,6 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema({
-    // username: {
-    //     type: String,
-    //     required: true,
-    //     unique: true,
-    // },
-    // firstName: {
-    //     type: String,
-    //     required: true,
-    // },
-    // lastName: String,
     email: {
         type: String,
         required: true,
@@ -23,15 +13,6 @@ const userSchema = new mongoose.Schema({
         required: true,
         select: false,
     },
-    // role: {
-    //     type: String,
-    //     enum: ["user", "admin"],
-    //     default: "user",
-    // },
-    // profileImage: {
-    //     type: String,
-    //     default: "",
-    // },
     institution: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Institution",

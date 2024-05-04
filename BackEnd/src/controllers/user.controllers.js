@@ -3,9 +3,6 @@ import { User } from '../models/user.model.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { ApiError } from '../utils/ApiError.js';
 import { Institution } from '../models/institution.model.js';
-import pkg from 'mongoose';
-
-const { $or } = pkg;
 
 const createAccessAndRefreshToken = async (userId) => {
     if (!userId) {

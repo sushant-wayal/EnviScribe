@@ -8,7 +8,6 @@ import { User } from "../models/user.model.js";
 export const getAllSensors = asyncHandler(async (req, res) => {
     const { deviceId } = req.params;
     const { query } = req.query;
-    console.log("query",query);
     if (deviceId) {
         if (query != undefined) {
             let { sensors } = await Device.findById(deviceId).select("sensors").populate({
