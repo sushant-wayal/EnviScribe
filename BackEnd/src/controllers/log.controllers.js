@@ -2,9 +2,8 @@ import { asyncHandler } from "../utils/AsyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { Log } from "../models/log.model.js";
-import { Device } from "../models/device.model.js";
 import { Sensor } from "../models/sensor.model.js";
-import { User } from "../models/user.model.js";
+import { sendEmail } from "../utils/mailer.js";
 
 const getIntervalLogs = (logs, intervalValue) => {
     const intervalLogs = [];
@@ -170,5 +169,31 @@ export const createLog = asyncHandler(async (req, res) => {
             logs: log._id,
         },
     });
+    const checkLogs = await Log.find({
+        sensor: sensorId,
+        onHold: false,
+    }).sort({ createdAt: -1 }).limit(5);
+    const logStatus = "normal";
+    if (checkLogs.length === 5) {
+        let alertCount = 0;
+        let warningCount = 0;
+        for (let i = 0; i < checkLogs.length; i++) {
+            if (checkLogs[i].status == "warning") {
+                warningCount++;
+            }
+            if (checkLogs[i].status == "alert") {
+                alertCount++;
+            }
+        }
+        if (warningCount == 5) {
+            logStatus = "warning";
+        }
+        if (alertCount >= 3) {
+            logStatus = "alert";
+        }
+    }
+    if (logStatus !== "normal") {
+        sendEmail(sensorId, logStatus);
+    }
     res.status(201).json(new ApiResponse(201, log));
 });
