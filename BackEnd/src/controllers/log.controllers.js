@@ -173,7 +173,7 @@ export const createLog = asyncHandler(async (req, res) => {
         sensor: sensorId,
         onHold: false,
     }).sort({ createdAt: -1 }).limit(5);
-    const logStatus = "normal";
+    let logStatus = "normal";
     if (checkLogs.length === 5) {
         let alertCount = 0;
         let warningCount = 0;
